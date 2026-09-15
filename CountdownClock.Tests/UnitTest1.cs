@@ -64,22 +64,18 @@ public class TimeMetricsTests
     }
 
     [Fact]
-    public void TimeMetrics_CalculatesSpentAndRemainingWorkdays()
+    public void TimeMetrics_CalculatesRemainingWorkdaysAndComponents()
     {
-        var baseline = new DateTime(2026, 11, 2, 9, 0, 0);  // Monday
-        var now = new DateTime(2026, 11, 3, 13, 0, 0);       // Tuesday 13:00 (1 day + 4h = 12h = 1.5 workdays)
-        var target = new DateTime(2026, 11, 4, 17, 0, 0);    // Wednesday 17:00 (target)
+        var now = new DateTime(2026, 11, 3, 13, 0, 0);       // Tuesday 13:00 (4h remaining today)
+        var target = new DateTime(2026, 11, 4, 17, 0, 0);    // Wednesday 17:00 (8h tomorrow) => total 12h = 1.5 workdays
 
-        var metrics = new TimeMetrics(now, target, baseline);
+        var metrics = new TimeMetrics(now, target);
 
-        Assert.Equal(1.5, metrics.SpentWorkdays, precision: 2);
         Assert.Equal(1.5, metrics.RemainingWorkdays, precision: 2);
         Assert.Equal(1, metrics.RemainingFullWorkdays);
         Assert.Equal(4, metrics.RemainingWorkHoursWithinDay);
         Assert.Equal(0, metrics.RemainingWorkMinutes);
         Assert.Equal(0, metrics.RemainingWorkSeconds);
-        Assert.Equal(3.0, metrics.TotalPeriodWorkdays, precision: 2);
-        Assert.Equal(50.0, metrics.WorkdayProgressPercentage, precision: 1);
     }
 }
 

@@ -10,12 +10,9 @@ public class TimeMetrics
 
     public DateTime Now { get; }
     public DateTime Target { get; }
-    public DateTime BaselineStart { get; }
 
     public bool HasReachedTarget => Now >= Target;
     public TimeSpan TotalRemaining => HasReachedTarget ? TimeSpan.Zero : Target - Now;
-    public TimeSpan TotalElapsed => Now > BaselineStart ? Now - BaselineStart : TimeSpan.Zero;
-    public TimeSpan TotalPeriod => Target - BaselineStart;
 
     // Remaining business metrics
     public TimeSpan RemainingBusinessTime { get; }
@@ -32,63 +29,15 @@ public class TimeMetrics
     public int RemainingWorkSeconds => RemainingBusinessTime.Seconds;
     public int RemainingWorkMilliseconds => RemainingBusinessTime.Milliseconds;
 
-    // Elapsed business metrics (time spent)
-    public TimeSpan ElapsedBusinessTime { get; }
-    public int ElapsedBusinessDaysCount { get; }
-    public double SpentWorkdays => ElapsedBusinessTime.TotalHours / HoursPerWorkDay;
-    public double SpentRaw8hShifts => TotalElapsed.TotalHours / HoursPerWorkDay;
-    public double SpentWorkWeeks => ElapsedBusinessTime.TotalHours / 40.0;
-
-    // Total period business metrics
-    public TimeSpan TotalPeriodBusinessTime { get; }
-    public int TotalPeriodBusinessDaysCount { get; }
-    public double TotalPeriodWorkdays => TotalPeriodBusinessTime.TotalHours / HoursPerWorkDay;
-
-    // Progress percentage
-    public double CalendarProgressPercentage { get; }
-    public double WorkdayProgressPercentage { get; }
-
-    public TimeMetrics(DateTime now, DateTime target, DateTime? baselineStart = null)
+    public TimeMetrics(DateTime now, DateTime target)
     {
         Now = now;
         Target = target;
-        BaselineStart = baselineStart ?? new DateTime(target.Year, 1, 1, 0, 0, 0);
-
-        if (BaselineStart > Now)
-        {
-            BaselineStart = new DateTime(now.Year, 1, 1, 0, 0, 0);
-        }
 
         var (remTime, remDays, isWorkHours) = CalculateBusinessDuration(Now, Target);
         RemainingBusinessTime = remTime;
         RemainingBusinessDaysCount = remDays;
         IsCurrentlyWorkHours = isWorkHours;
-
-        var (elapTime, elapDays, _) = CalculateBusinessDuration(BaselineStart, Now);
-        ElapsedBusinessTime = elapTime;
-        ElapsedBusinessDaysCount = elapDays;
-
-        var (totTime, totDays, _) = CalculateBusinessDuration(BaselineStart, Target);
-        TotalPeriodBusinessTime = totTime;
-        TotalPeriodBusinessDaysCount = totDays;
-
-        if (TotalPeriod.TotalSeconds > 0)
-        {
-            CalendarProgressPercentage = Math.Clamp((TotalElapsed.TotalSeconds / TotalPeriod.TotalSeconds) * 100.0, 0.0, 100.0);
-        }
-        else
-        {
-            CalendarProgressPercentage = 100.0;
-        }
-
-        if (TotalPeriodBusinessTime.TotalSeconds > 0)
-        {
-            WorkdayProgressPercentage = Math.Clamp((ElapsedBusinessTime.TotalSeconds / TotalPeriodBusinessTime.TotalSeconds) * 100.0, 0.0, 100.0);
-        }
-        else
-        {
-            WorkdayProgressPercentage = 100.0;
-        }
     }
 
     public static (TimeSpan businessDuration, int businessDaysCount, bool isStartInWorkHours) CalculateBusinessDuration(DateTime start, DateTime end)

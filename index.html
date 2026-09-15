@@ -311,71 +311,18 @@
     }
 
     .metric-row.highlight .val {
-      color: var(--accent-green);
+      color: var(--accent-cyan);
       font-size: 0.95rem;
     }
 
-    .metric-row.highlight-yellow .name {
+    .metric-row.highlight-green .name {
       color: #ffffff;
       font-weight: 600;
     }
 
-    .metric-row.highlight-yellow .val {
-      color: var(--accent-yellow);
+    .metric-row.highlight-green .val {
+      color: var(--accent-green);
       font-size: 0.95rem;
-    }
-
-    /* Progress Section */
-    .progress-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 18px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .progress-item {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .progress-header span.pct {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-    }
-
-    .progress-track {
-      height: 10px;
-      background: #1f293d;
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    .progress-fill.cyan {
-      background: linear-gradient(90deg, #0284c7, var(--accent-cyan));
-      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-    }
-
-    .progress-fill.green {
-      background: linear-gradient(90deg, #059669, var(--accent-green));
-      box-shadow: 0 0 10px var(--accent-green-glow);
     }
 
     /* Footer */
@@ -465,15 +412,15 @@
       </div>
     </section>
 
-    <!-- Two Column Breakdown -->
+    <!-- Two Column Breakdown (Countdown Only) -->
     <div class="metrics-grid">
-      <!-- Total Calendar Time -->
+      <!-- Total Calendar Countdown -->
       <div class="metric-card cyan">
-        <div class="card-heading">🌐 Total Calendar Time</div>
+        <div class="card-heading">🌐 Total Calendar Countdown</div>
         <div class="metric-rows">
           <div class="metric-row highlight">
             <span class="name">Time Remaining</span>
-            <span class="val" id="calTimeRemaining" style="color: var(--accent-cyan);">--</span>
+            <span class="val" id="calTimeRemaining">--</span>
           </div>
           <div class="metric-row">
             <span class="name">Total Days Remaining</span>
@@ -491,18 +438,14 @@
             <span class="name">Total Seconds Remaining</span>
             <span class="val" id="calTotalSecs">-- sec</span>
           </div>
-          <div class="metric-row">
-            <span class="name">Time Spent (Year Elapsed)</span>
-            <span class="val" id="calTimeSpent" style="color: var(--text-muted);">--</span>
-          </div>
         </div>
       </div>
 
-      <!-- 8-Hour Workday Breakdown -->
+      <!-- 8-Hour Workday Countdown -->
       <div class="metric-card green">
-        <div class="card-heading">💼 8-Hour Workday Tracker</div>
+        <div class="card-heading">💼 8-Hour Workday Countdown</div>
         <div class="metric-rows">
-          <div class="metric-row highlight">
+          <div class="metric-row highlight-green">
             <span class="name">Workdays Remaining (8h/day)</span>
             <span class="val" id="workWorkdaysRemaining">-- workdays</span>
           </div>
@@ -514,13 +457,9 @@
             <span class="name">Mon-Fri Business Days Left</span>
             <span class="val" id="workBusinessDaysCount">-- days</span>
           </div>
-          <div class="metric-row highlight-yellow">
-            <span class="name">Time Spent in Workdays (8h)</span>
-            <span class="val" id="workWorkdaysSpent">-- workdays</span>
-          </div>
           <div class="metric-row">
-            <span class="name">Business Working Hours Spent</span>
-            <span class="val" id="workBusinessHoursSpent">-- hrs</span>
+            <span class="name">Standard 40h Work Weeks Left</span>
+            <span class="val" id="workWorkWeeksLeft">-- weeks</span>
           </div>
           <div class="metric-row">
             <span class="name">Raw 24/7 Hours in 8h Shifts</span>
@@ -530,32 +469,9 @@
       </div>
     </div>
 
-    <!-- Progress Bars -->
-    <section class="progress-card">
-      <div class="progress-item">
-        <div class="progress-header">
-          <span>Calendar Year Progress to Nov 30:</span>
-          <span class="pct" id="calProgressPct" style="color: var(--accent-cyan);">0.0%</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill cyan" id="calProgressBar" style="width: 0%;"></div>
-        </div>
-      </div>
-
-      <div class="progress-item">
-        <div class="progress-header">
-          <span>Workdays Spent vs Total Period:</span>
-          <span class="pct" id="workProgressPct" style="color: var(--accent-green);">0.0%</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill green" id="workProgressBar" style="width: 0%;"></div>
-        </div>
-      </div>
-    </section>
-
     <!-- Footer -->
     <div class="footer">
-      Pure static HTML/JS/CSS • Precision sub-second live updates
+      Pure static HTML/JS/CSS • Target: November 30 @ 17:00 • Precision sub-second live countdown
     </div>
   </div>
 
@@ -643,13 +559,9 @@
     function updateClock() {
       const now = new Date();
       const target = getUpcomingTarget(now);
-      const baselineStart = new Date(target.getFullYear(), 0, 1, 0, 0, 0);
 
-      // Total calendar times
+      // Total calendar remaining time
       const totalRemMs = Math.max(0, target - now);
-      const totalElapsedMs = Math.max(0, now - baselineStart);
-      const totalPeriodMs = target - baselineStart;
-
       const totalRemSec = totalRemMs / 1000;
       const totalRemDays = totalRemSec / 86400;
       const totalRemHours = totalRemSec / 3600;
@@ -661,20 +573,11 @@
       const calMins = Math.floor((totalRemMs / (1000 * 60)) % 60);
       const calSecs = Math.floor((totalRemMs / 1000) % 60);
 
-      const calElapsedDays = Math.floor(totalElapsedMs / (1000 * 60 * 60 * 24));
-      const calElapsedHours = Math.floor((totalElapsedMs / (1000 * 60 * 60)) % 24);
-      const calElapsedMins = Math.floor((totalElapsedMs / (1000 * 60)) % 60);
-
-      // Business durations
+      // Business remaining duration
       const remBiz = calculateBusinessDuration(now, target);
-      const elapBiz = calculateBusinessDuration(baselineStart, now);
-      const totBiz = calculateBusinessDuration(baselineStart, target);
-
       const remBizHours = remBiz.businessSeconds / 3600;
       const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
-      const elapBizHours = elapBiz.businessSeconds / 3600;
-      const elapWorkdays = elapBizHours / HOURS_PER_WORK_DAY;
-      const totBizHours = totBiz.businessSeconds / 3600;
+      const remWorkWeeks = remBizHours / 40.0;
 
       // Workday clock components
       const workdaysFull = Math.floor(remBizHours / HOURS_PER_WORK_DAY);
@@ -683,16 +586,9 @@
       const workSeconds = Math.floor(remBiz.businessSeconds % 60);
       const workTenths = Math.floor(((remBiz.businessSeconds * 1000) % 1000) / 100);
 
-      // Progress
-      const calPct = Math.min(100, Math.max(0, (totalElapsedMs / totalPeriodMs) * 100));
-      const workPct = totBiz.businessSeconds > 0
-        ? Math.min(100, Math.max(0, (elapBiz.businessSeconds / totBiz.businessSeconds) * 100))
-        : 100;
-
       // DOM Updates
       // Header
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       
       const dayStr = daysOfWeek[now.getDay()];
       const nowStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(Math.floor(now.getMilliseconds()/10))} (${dayStr})`;
@@ -718,28 +614,19 @@
       document.getElementById('secsVal').textContent = pad(workSeconds, 2);
       document.getElementById('tenthsVal').textContent = pad(workTenths * 10, 2);
 
-      // Left Card: Calendar Time
+      // Left Card: Calendar Countdown
       document.getElementById('calTimeRemaining').textContent = `${calDays}d ${calHours}h ${calMins}m ${calSecs}s`;
       document.getElementById('calTotalDays').textContent = `${formatNumber(totalRemDays, 2)} days`;
       document.getElementById('calTotalHours').textContent = `${formatNumber(totalRemHours, 1)} hrs`;
       document.getElementById('calTotalMins').textContent = `${formatNumber(totalRemMins, 0)} min`;
       document.getElementById('calTotalSecs').textContent = `${formatNumber(totalRemSec, 0)} sec`;
-      document.getElementById('calTimeSpent').textContent = `${calElapsedDays}d ${calElapsedHours}h ${calElapsedMins}m`;
 
-      // Right Card: 8-Hour Workday Breakdown
+      // Right Card: 8-Hour Workday Countdown
       document.getElementById('workWorkdaysRemaining').textContent = `${formatNumber(remWorkdays, 2)} workdays`;
       document.getElementById('workBusinessHoursLeft').textContent = `${formatNumber(remBizHours, 1)} hrs (${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`;
       document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days`;
-      document.getElementById('workWorkdaysSpent').textContent = `${formatNumber(elapWorkdays, 2)} workdays`;
-      document.getElementById('workBusinessHoursSpent').textContent = `${formatNumber(elapBizHours, 1)} hrs`;
+      document.getElementById('workWorkWeeksLeft').textContent = `${formatNumber(remWorkWeeks, 2)} weeks`;
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
-
-      // Progress
-      document.getElementById('calProgressPct').textContent = `${calPct.toFixed(1)}%`;
-      document.getElementById('calProgressBar').style.width = `${calPct}%`;
-
-      document.getElementById('workProgressPct').textContent = `${workPct.toFixed(1)}%`;
-      document.getElementById('workProgressBar').style.width = `${workPct}%`;
     }
 
     // Run immediately and then tick every 50ms for smooth live updates

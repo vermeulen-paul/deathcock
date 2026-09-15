@@ -188,9 +188,9 @@ public class Program
         summaryGrid.AddColumn(new GridColumn().PadRight(1));
         summaryGrid.AddColumn(new GridColumn().PadLeft(1));
 
-        // Left Card: Total Calendar Time
+        // Left Card: Total Calendar Countdown
         var totalTimeTable = new Table().Border(TableBorder.Simple).Expand();
-        totalTimeTable.AddColumn(new TableColumn("[bold cyan]Calendar Metric[/]"));
+        totalTimeTable.AddColumn(new TableColumn("[bold cyan]Calendar Countdown Metric[/]"));
         totalTimeTable.AddColumn(new TableColumn("[bold cyan]Value[/]").RightAligned());
 
         totalTimeTable.AddRow("[bold white]Time Remaining[/]", $"[bold cyan]{metrics.TotalRemaining.Days}d {metrics.TotalRemaining.Hours}h {metrics.TotalRemaining.Minutes}m {metrics.TotalRemaining.Seconds}s[/]");
@@ -198,16 +198,15 @@ public class Program
         totalTimeTable.AddRow("[grey]Total Hours Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalHours:N1}[/] hours");
         totalTimeTable.AddRow("[grey]Total Minutes Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalMinutes:N0}[/] min");
         totalTimeTable.AddRow("[grey]Total Seconds Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalSeconds:N0}[/] sec");
-        totalTimeTable.AddRow("[dim]Time Spent (Year Elapsed)[/]", $"[dim]{metrics.TotalElapsed.Days}d {metrics.TotalElapsed.Hours}h {metrics.TotalElapsed.Minutes}m[/]");
 
         var totalTimePanel = new Panel(totalTimeTable)
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Cyan1)
-            .Header("[bold cyan] 🌐 Total Calendar Time [/]", Justify.Left);
+            .Header("[bold cyan] 🌐 Total Calendar Countdown [/]", Justify.Left);
 
-        // Right Card: 8-Hour Workday Breakdown
+        // Right Card: 8-Hour Workday Countdown
         var workdayTable = new Table().Border(TableBorder.Simple).Expand();
-        workdayTable.AddColumn(new TableColumn("[bold green]Workday Metric (8h / day)[/]"));
+        workdayTable.AddColumn(new TableColumn("[bold green]Workday Countdown (8h/day)[/]"));
         workdayTable.AddColumn(new TableColumn("[bold green]Value[/]").RightAligned());
 
         workdayTable.AddRow(
@@ -215,7 +214,7 @@ public class Program
             $"[bold green]{metrics.RemainingWorkdays:N2}[/] [dim]workdays[/]"
         );
         workdayTable.AddRow(
-            "[grey]Business Working Hours Left (09-17)[/]",
+            "[grey]Business Hours Left (09-17)[/]",
             $"[bold green]{metrics.RemainingBusinessTime.TotalHours:N1}[/] [dim]hours ({metrics.RemainingBusinessTime.Hours}h {metrics.RemainingBusinessTime.Minutes}m {metrics.RemainingBusinessTime.Seconds}s)[/]"
         );
         workdayTable.AddRow(
@@ -223,12 +222,8 @@ public class Program
             $"[bold green]{metrics.RemainingBusinessDaysCount}[/] [dim]calendar days[/]"
         );
         workdayTable.AddRow(
-            "[bold yellow]Time Spent in Workdays (8h)[/]",
-            $"[bold yellow]{metrics.SpentWorkdays:N2}[/] [dim]workdays spent[/]"
-        );
-        workdayTable.AddRow(
-            "[grey]Business Working Hours Spent[/]",
-            $"[bold yellow]{metrics.ElapsedBusinessTime.TotalHours:N1}[/] [dim]hours spent[/]"
+            "[grey]Standard 40h Work Weeks Left[/]",
+            $"[bold white]{metrics.RemainingWorkWeeks:N2}[/] [dim]work weeks[/]"
         );
         workdayTable.AddRow(
             "[grey]Raw 24/7 Hours in 8h Shifts[/]",
@@ -238,55 +233,18 @@ public class Program
         var workdayPanel = new Panel(workdayTable)
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Green)
-            .Header("[bold green] 💼 8-Hour Workday Tracker [/]", Justify.Left);
+            .Header("[bold green] 💼 8-Hour Workday Countdown [/]", Justify.Left);
 
         summaryGrid.AddRow(totalTimePanel, workdayPanel);
         rootGrid.AddRow(summaryGrid);
 
-        // 4. Progress Bars
-        var progressTable = new Table().Border(TableBorder.None).HideHeaders().Expand();
-        progressTable.AddColumn(new TableColumn("ProgressMetric").PadRight(2));
-        progressTable.AddColumn(new TableColumn("ProgressBar"));
-        progressTable.AddColumn(new TableColumn("Percent").RightAligned());
-
-        string calBar = RenderAsciiProgressBar(metrics.CalendarProgressPercentage, 35, "cyan", "grey23");
-        progressTable.AddRow(
-            new Markup("[dim]Calendar Year Progress:[/]"),
-            new Markup(calBar),
-            new Markup($"[bold cyan]{metrics.CalendarProgressPercentage:F1}%[/]")
-        );
-
-        string workBar = RenderAsciiProgressBar(metrics.WorkdayProgressPercentage, 35, "green", "grey23");
-        progressTable.AddRow(
-            new Markup("[dim]Workdays Spent vs Total:[/]"),
-            new Markup(workBar),
-            new Markup($"[bold green]{metrics.WorkdayProgressPercentage:F1}%[/]")
-        );
-
-        rootGrid.AddRow(new Panel(progressTable)
-            .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Grey35)
-            .Header("[dim] 📊 Progress to Nov 30 17:00 [/]", Justify.Left));
-
-        // 5. Controls / Footer
+        // 4. Controls / Footer
         rootGrid.AddRow(new Align(
             new Markup("[dim grey]Controls: Press [/][bold white]Q[/][dim grey] or [/][bold white]ESC[/][dim grey] or [/][bold white]Ctrl+C[/][dim grey] to quit. Live precision: 100ms.[/]"),
             HorizontalAlignment.Center
         ));
 
         return rootGrid;
-    }
-
-    private static string RenderAsciiProgressBar(double percentage, int width, string filledColor, string emptyColor)
-    {
-        percentage = Math.Clamp(percentage, 0.0, 100.0);
-        int filledWidth = (int)Math.Round((percentage / 100.0) * width);
-        int emptyWidth = width - filledWidth;
-
-        string filled = new('█', filledWidth);
-        string empty = new('░', emptyWidth);
-
-        return $"[{filledColor}]{filled}[/][{emptyColor}]{empty}[/]";
     }
 }
 
