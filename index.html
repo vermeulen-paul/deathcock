@@ -227,32 +227,99 @@
       flex-direction: column;
       align-items: center;
       box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
     }
 
     .digit-box.accent {
       background: #1e1b4b;
       border-color: #6366f1;
-      min-width: 150px;
+      min-width: 140px;
       box-shadow: 0 0 20px rgba(99, 102, 241, 0.35), inset 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .digit-box::before, .digit-box::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 8px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .digit-box::before {
+      top: 0;
+      background: linear-gradient(180deg, rgba(6, 19, 41, 0.9) 0%, transparent 100%);
+    }
+
+    .digit-box::after {
+      bottom: 0;
+      background: linear-gradient(0deg, rgba(6, 19, 41, 0.9) 0%, transparent 100%);
+    }
+
+    .digit-box.accent::before {
+      background: linear-gradient(180deg, rgba(30, 27, 75, 0.9) 0%, transparent 100%);
+    }
+
+    .digit-box.accent::after {
+      background: linear-gradient(0deg, rgba(30, 27, 75, 0.9) 0%, transparent 100%);
     }
 
     .digit-val {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 2.5rem;
+      font-size: 2.6rem;
       font-weight: 800;
       color: #ffffff;
       line-height: 1;
-      text-shadow: 0 0 14px rgba(59, 130, 246, 0.65);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
     }
 
-    .digit-box.accent .digit-val {
+    .digit-slot {
+      display: inline-block;
+      position: relative;
+      width: 0.62em;
+      height: 1.22em;
+      line-height: 1.22em;
+      overflow: hidden;
+      text-align: center;
+      vertical-align: middle;
+      perspective: 350px;
+    }
+
+    .digit-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-shadow: 0 0 14px rgba(59, 130, 246, 0.65);
+      backface-visibility: hidden;
+      will-change: transform, opacity;
+      transform: translateY(0) rotateX(0deg);
+      opacity: 1;
+      transition: transform 0.38s cubic-bezier(0.2, 0.85, 0.32, 1.2), opacity 0.32s ease-out;
+    }
+
+    .digit-box.accent .digit-card {
       color: #ffffff;
       text-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
     }
 
-    .digit-box.tenth .digit-val {
-      color: #94a3b8;
-      font-size: 2.1rem;
+    .digit-card.slide-in-bottom {
+      transform: translateY(115%) rotateX(40deg);
+      opacity: 0;
+    }
+
+    .digit-card.slide-out-top {
+      transform: translateY(-115%) rotateX(-40deg);
+      opacity: 0;
     }
 
     .digit-lbl {
@@ -430,22 +497,22 @@
       <div class="clock-tag">🦅 REMAINING PATRIOT WORK TIME (8H WORKDAYS) 🇺🇸</div>
       <div class="clock-digits-container" id="clockDigitsContainer">
         <div class="digit-box accent">
-          <div class="digit-val" id="workdaysVal">000</div>
+          <div class="digit-val" id="workdaysVal"></div>
           <div class="digit-lbl">🇺🇸 WORKDAYS (8h) 🦅</div>
         </div>
         <span class="colon-separator">:</span>
         <div class="digit-box">
-          <div class="digit-val" id="hoursVal">00</div>
+          <div class="digit-val" id="hoursVal"></div>
           <div class="digit-lbl">HOURS</div>
         </div>
         <span class="colon-separator">:</span>
         <div class="digit-box">
-          <div class="digit-val" id="minsVal">00</div>
+          <div class="digit-val" id="minsVal"></div>
           <div class="digit-lbl">MINUTES</div>
         </div>
         <span class="colon-separator">:</span>
         <div class="digit-box">
-          <div class="digit-val" id="secsVal">00</div>
+          <div class="digit-val" id="secsVal"></div>
           <div class="digit-lbl">SECONDS</div>
         </div>
       </div>
@@ -595,6 +662,59 @@
       });
     }
 
+    function updateRollingDisplay(container, newText) {
+      // Clear any raw text nodes on first load
+      Array.from(container.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          container.removeChild(node);
+        }
+      });
+
+      // Ensure matching number of slot elements
+      while (container.children.length < newText.length) {
+        const slot = document.createElement('span');
+        slot.className = 'digit-slot';
+        container.appendChild(slot);
+      }
+      while (container.children.length > newText.length) {
+        container.removeChild(container.lastChild);
+      }
+
+      for (let i = 0; i < newText.length; i++) {
+        const slot = container.children[i];
+        const newChar = newText[i];
+        const currentCard = slot.querySelector('.digit-card:not(.slide-out-top)');
+
+        if (!currentCard) {
+          const card = document.createElement('span');
+          card.className = 'digit-card';
+          card.textContent = newChar;
+          slot.appendChild(card);
+          continue;
+        }
+
+        if (currentCard.textContent !== newChar) {
+          currentCard.classList.add('slide-out-top');
+
+          const nextCard = document.createElement('span');
+          nextCard.className = 'digit-card slide-in-bottom';
+          nextCard.textContent = newChar;
+          slot.appendChild(nextCard);
+
+          // Trigger reflow for CSS transition to take effect
+          void nextCard.offsetWidth;
+
+          nextCard.classList.remove('slide-in-bottom');
+
+          setTimeout(() => {
+            if (currentCard.parentNode === slot) {
+              slot.removeChild(currentCard);
+            }
+          }, 380);
+        }
+      }
+    }
+
     function updateClock() {
       const now = new Date();
       const target = getUpcomingTarget(now);
@@ -645,11 +765,11 @@
         badgeText.textContent = '🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸';
       }
 
-      // Main Clock
-      document.getElementById('workdaysVal').textContent = pad(workdaysFull, 3);
-      document.getElementById('hoursVal').textContent = pad(workHoursWithinDay, 2);
-      document.getElementById('minsVal').textContent = pad(workMinutes, 2);
-      document.getElementById('secsVal').textContent = pad(workSeconds, 2);
+      // Main Rolling Digit Clock
+      updateRollingDisplay(document.getElementById('workdaysVal'), pad(workdaysFull, 2));
+      updateRollingDisplay(document.getElementById('hoursVal'), pad(workHoursWithinDay, 2));
+      updateRollingDisplay(document.getElementById('minsVal'), pad(workMinutes, 2));
+      updateRollingDisplay(document.getElementById('secsVal'), pad(workSeconds, 2));
 
       // Left Card: Calendar Countdown
       document.getElementById('calTimeRemaining').textContent = `${calDays}d ${calHours}h ${calMins}m ${calSecs}s`;

@@ -167,7 +167,7 @@ public class Program
             );
 
             clockDisplay.AddRow(
-                $"[bold white on darkblue]    🦅 {metrics.RemainingFullWorkdays:D3} 🦅    [/]",
+                $"[bold white on darkblue]    🦅 {metrics.RemainingFullWorkdays:D2} 🦅    [/]",
                 $"[bold white on darkblue]   {metrics.RemainingWorkHoursWithinDay:D2}   [/]",
                 $"[bold white on darkblue]   {metrics.RemainingWorkMinutes:D2}   [/]",
                 $"[bold white on darkblue]   {metrics.RemainingWorkSeconds:D2}   [/]"
