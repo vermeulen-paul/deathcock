@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown Clock & 8h Workday Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --accent-green: #10b981;
+      --accent-green-glow: rgba(16, 185, 129, 0.25);
+      --accent-cyan: #06b6d4;
+      --accent-yellow: #f59e0b;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --clock-bg: #09131f;
+      --clock-border: #047857;
+      --pill-bg: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(6, 182, 212, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    .header-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 12px var(--accent-green-glow);
+    }
+
+    .badge.inactive {
+      background: rgba(107, 114, 128, 0.2);
+      color: var(--text-secondary);
+      border: 1px solid rgba(107, 114, 128, 0.3);
+    }
+
+    .badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .badge.active .dot {
+      box-shadow: 0 0 8px currentColor;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .header-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.875rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .detail-item span.label {
+      color: var(--text-muted);
+    }
+
+    .detail-item span.val {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .detail-item.right {
+      text-align: right;
+    }
+
+    /* Main Clock Display */
+    .clock-card {
+      background: linear-gradient(180deg, #0d1e2e 0%, #081420 100%);
+      border: 2px solid var(--accent-green);
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 0 35px var(--accent-green-glow), 0 10px 30px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .clock-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    }
+
+    .clock-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-green);
+      margin-bottom: 18px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .clock-digits-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .digit-box {
+      background: #041417;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      padding: 14px 18px;
+      min-width: 105px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+    }
+
+    .digit-box.accent {
+      background: #022c22;
+      border-color: var(--accent-green);
+      min-width: 140px;
+    }
+
+    .digit-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      text-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+    }
+
+    .digit-box.tenth .digit-val {
+      color: #94a3b8;
+      font-size: 2.1rem;
+    }
+
+    .digit-lbl {
+      margin-top: 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .colon-separator {
+      font-size: 2rem;
+      font-weight: 700;
+      color: rgba(16, 185, 129, 0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Grid of Two Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .metric-card.cyan {
+      border-top: 3px solid var(--accent-cyan);
+    }
+
+    .metric-card.green {
+      border-top: 3px solid var(--accent-green);
+    }
+
+    .card-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card.cyan .card-heading { color: var(--accent-cyan); }
+    .metric-card.green .card-heading { color: var(--accent-green); }
+
+    .metric-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .metric-row .name {
+      color: var(--text-secondary);
+    }
+
+    .metric-row .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .metric-row.highlight .name {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .metric-row.highlight .val {
+      color: var(--accent-green);
+      font-size: 0.95rem;
+    }
+
+    .metric-row.highlight-yellow .name {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .metric-row.highlight-yellow .val {
+      color: var(--accent-yellow);
+      font-size: 0.95rem;
+    }
+
+    /* Progress Section */
+    .progress-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .progress-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .progress-header span.pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 10px;
+      background: #1f293d;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-fill.cyan {
+      background: linear-gradient(90deg, #0284c7, var(--accent-cyan));
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+
+    .progress-fill.green {
+      background: linear-gradient(90deg, #059669, var(--accent-green));
+      box-shadow: 0 0 10px var(--accent-green-glow);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    @media (max-width: 768px) {
+      .header-details {
+        grid-template-columns: 1fr;
+      }
+      .detail-item.right {
+        text-align: left;
+      }
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      .digit-box {
+        min-width: 80px;
+        padding: 10px 12px;
+      }
+      .digit-box.accent {
+        min-width: 100px;
+      }
+      .digit-val {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header-card">
+      <div class="header-top">
+        <div class="title-group">
+          <h1>⏳ COUNTDOWN CLOCK & 8H WORKDAY TRACKER</h1>
+        </div>
+        <div id="workStatusBadge" class="badge active">
+          <span class="dot"></span>
+          <span id="workStatusText">WORK HOURS ACTIVE (09:00 - 17:00)</span>
+        </div>
+      </div>
+      <div class="header-details">
+        <div class="detail-item">
+          <span class="label">Current Time: </span>
+          <span class="val" id="currentDateDisplay">--</span>
+        </div>
+        <div class="detail-item right">
+          <span class="label">Target Deadline: </span>
+          <span class="val" id="targetDateDisplay" style="color: var(--accent-yellow);">Nov 30, 17:00:00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Live Clock Display (Work Time Remaining) -->
+    <section class="clock-card">
+      <div class="clock-tag">💼 REMAINING WORK TIME (8H WORKDAYS)</div>
+      <div class="clock-digits-container" id="clockDigitsContainer">
+        <div class="digit-box accent">
+          <div class="digit-val" id="workdaysVal">000</div>
+          <div class="digit-lbl">WORKDAYS (8h)</div>
+        </div>
+        <span class="colon-separator">:</span>
+        <div class="digit-box">
+          <div class="digit-val" id="hoursVal">00</div>
+          <div class="digit-lbl">HOURS</div>
+        </div>
+        <span class="colon-separator">:</span>
+        <div class="digit-box">
+          <div class="digit-val" id="minsVal">00</div>
+          <div class="digit-lbl">MINUTES</div>
+        </div>
+        <span class="colon-separator">:</span>
+        <div class="digit-box">
+          <div class="digit-val" id="secsVal">00</div>
+          <div class="digit-lbl">SECONDS</div>
+        </div>
+        <span class="colon-separator">.</span>
+        <div class="digit-box tenth">
+          <div class="digit-val" id="tenthsVal">00</div>
+          <div class="digit-lbl">TENTHS</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Two Column Breakdown -->
+    <div class="metrics-grid">
+      <!-- Total Calendar Time -->
+      <div class="metric-card cyan">
+        <div class="card-heading">🌐 Total Calendar Time</div>
+        <div class="metric-rows">
+          <div class="metric-row highlight">
+            <span class="name">Time Remaining</span>
+            <span class="val" id="calTimeRemaining" style="color: var(--accent-cyan);">--</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Total Days Remaining</span>
+            <span class="val" id="calTotalDays">-- days</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Total Hours Remaining</span>
+            <span class="val" id="calTotalHours">-- hrs</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Total Minutes Remaining</span>
+            <span class="val" id="calTotalMins">-- min</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Total Seconds Remaining</span>
+            <span class="val" id="calTotalSecs">-- sec</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Time Spent (Year Elapsed)</span>
+            <span class="val" id="calTimeSpent" style="color: var(--text-muted);">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8-Hour Workday Breakdown -->
+      <div class="metric-card green">
+        <div class="card-heading">💼 8-Hour Workday Tracker</div>
+        <div class="metric-rows">
+          <div class="metric-row highlight">
+            <span class="name">Workdays Remaining (8h/day)</span>
+            <span class="val" id="workWorkdaysRemaining">-- workdays</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Business Hours Left (09-17)</span>
+            <span class="val" id="workBusinessHoursLeft">-- hrs</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Mon-Fri Business Days Left</span>
+            <span class="val" id="workBusinessDaysCount">-- days</span>
+          </div>
+          <div class="metric-row highlight-yellow">
+            <span class="name">Time Spent in Workdays (8h)</span>
+            <span class="val" id="workWorkdaysSpent">-- workdays</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Business Working Hours Spent</span>
+            <span class="val" id="workBusinessHoursSpent">-- hrs</span>
+          </div>
+          <div class="metric-row">
+            <span class="name">Raw 24/7 Hours in 8h Shifts</span>
+            <span class="val" id="workRawShifts">-- shifts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bars -->
+    <section class="progress-card">
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Calendar Year Progress to Nov 30:</span>
+          <span class="pct" id="calProgressPct" style="color: var(--accent-cyan);">0.0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill cyan" id="calProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Workdays Spent vs Total Period:</span>
+          <span class="pct" id="workProgressPct" style="color: var(--accent-green);">0.0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill green" id="workProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+      Pure static HTML/JS/CSS • Precision sub-second live updates
+    </div>
+  </div>
+
+  <script>
+    const WORK_DAY_START_HOUR = 9;  // 09:00
+    const WORK_DAY_END_HOUR = 17;   // 17:00 (8h work day)
+    const HOURS_PER_WORK_DAY = 8.0;
+
+    function getUpcomingTarget(now) {
+      const thisYearTarget = new Date(now.getFullYear(), 10, 30, 17, 0, 0, 0); // Month is 0-indexed: 10 = November
+      if (now <= thisYearTarget) {
+        return thisYearTarget;
+      }
+      return new Date(now.getFullYear() + 1, 10, 30, 17, 0, 0, 0);
+    }
+
+    function isWorkDay(date) {
+      const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+      return day !== 0 && day !== 6;
+    }
+
+    function calculateBusinessDuration(start, end) {
+      if (start >= end) {
+        return { businessSeconds: 0, businessDaysCount: 0, isStartInWorkHours: false };
+      }
+
+      const startDayOfWeek = start.getDay();
+      const isStartWeekday = startDayOfWeek !== 0 && startDayOfWeek !== 6;
+      const startHourFrac = start.getHours() + start.getMinutes() / 60 + start.getSeconds() / 3600;
+      const isStartInWorkHours = isStartWeekday && startHourFrac >= WORK_DAY_START_HOUR && startHourFrac < WORK_DAY_END_HOUR;
+
+      let totalBusinessSeconds = 0;
+      let businessDaysCount = 0;
+
+      let current = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+      while (current <= endDay) {
+        if (isWorkDay(current)) {
+          businessDaysCount++;
+
+          const dayStart = new Date(current.getFullYear(), current.getMonth(), current.getDate(), WORK_DAY_START_HOUR, 0, 0);
+          const dayEnd = new Date(current.getFullYear(), current.getMonth(), current.getDate(), WORK_DAY_END_HOUR, 0, 0);
+
+          let effStart = dayStart;
+          if (current.getTime() === new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime()) {
+            if (start > dayStart) {
+              effStart = start > dayEnd ? dayEnd : start;
+            }
+          }
+
+          let effEnd = dayEnd;
+          if (current.getTime() === endDay.getTime()) {
+            if (end < dayEnd) {
+              effEnd = end < dayStart ? dayStart : end;
+            }
+          }
+
+          if (effEnd > effStart) {
+            totalBusinessSeconds += (effEnd - effStart) / 1000;
+          }
+        }
+        current.setDate(current.getDate() + 1);
+      }
+
+      return {
+        businessSeconds: totalBusinessSeconds,
+        businessDaysCount: businessDaysCount,
+        isStartInWorkHours: isStartInWorkHours
+      };
+    }
+
+    function pad(num, size = 2) {
+      let s = "000" + num;
+      return s.substr(s.length - size);
+    }
+
+    function formatNumber(num, decimals = 1) {
+      return num.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const target = getUpcomingTarget(now);
+      const baselineStart = new Date(target.getFullYear(), 0, 1, 0, 0, 0);
+
+      // Total calendar times
+      const totalRemMs = Math.max(0, target - now);
+      const totalElapsedMs = Math.max(0, now - baselineStart);
+      const totalPeriodMs = target - baselineStart;
+
+      const totalRemSec = totalRemMs / 1000;
+      const totalRemDays = totalRemSec / 86400;
+      const totalRemHours = totalRemSec / 3600;
+      const totalRemMins = totalRemSec / 60;
+
+      // Calendar components
+      const calDays = Math.floor(totalRemMs / (1000 * 60 * 60 * 24));
+      const calHours = Math.floor((totalRemMs / (1000 * 60 * 60)) % 24);
+      const calMins = Math.floor((totalRemMs / (1000 * 60)) % 60);
+      const calSecs = Math.floor((totalRemMs / 1000) % 60);
+
+      const calElapsedDays = Math.floor(totalElapsedMs / (1000 * 60 * 60 * 24));
+      const calElapsedHours = Math.floor((totalElapsedMs / (1000 * 60 * 60)) % 24);
+      const calElapsedMins = Math.floor((totalElapsedMs / (1000 * 60)) % 60);
+
+      // Business durations
+      const remBiz = calculateBusinessDuration(now, target);
+      const elapBiz = calculateBusinessDuration(baselineStart, now);
+      const totBiz = calculateBusinessDuration(baselineStart, target);
+
+      const remBizHours = remBiz.businessSeconds / 3600;
+      const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
+      const elapBizHours = elapBiz.businessSeconds / 3600;
+      const elapWorkdays = elapBizHours / HOURS_PER_WORK_DAY;
+      const totBizHours = totBiz.businessSeconds / 3600;
+
+      // Workday clock components
+      const workdaysFull = Math.floor(remBizHours / HOURS_PER_WORK_DAY);
+      const workHoursWithinDay = Math.floor(remBizHours % HOURS_PER_WORK_DAY);
+      const workMinutes = Math.floor((remBiz.businessSeconds % 3600) / 60);
+      const workSeconds = Math.floor(remBiz.businessSeconds % 60);
+      const workTenths = Math.floor(((remBiz.businessSeconds * 1000) % 1000) / 100);
+
+      // Progress
+      const calPct = Math.min(100, Math.max(0, (totalElapsedMs / totalPeriodMs) * 100));
+      const workPct = totBiz.businessSeconds > 0
+        ? Math.min(100, Math.max(0, (elapBiz.businessSeconds / totBiz.businessSeconds) * 100))
+        : 100;
+
+      // DOM Updates
+      // Header
+      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      const dayStr = daysOfWeek[now.getDay()];
+      const nowStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(Math.floor(now.getMilliseconds()/10))} (${dayStr})`;
+      document.getElementById('currentDateDisplay').textContent = nowStr;
+
+      const targetDayStr = daysOfWeek[target.getDay()];
+      document.getElementById('targetDateDisplay').textContent = `November 30, ${target.getFullYear()} @ 17:00:00 (${targetDayStr})`;
+
+      const badge = document.getElementById('workStatusBadge');
+      const badgeText = document.getElementById('workStatusText');
+      if (remBiz.isStartInWorkHours) {
+        badge.className = 'badge active';
+        badgeText.textContent = 'WORK HOURS ACTIVE (09:00 - 17:00)';
+      } else {
+        badge.className = 'badge inactive';
+        badgeText.textContent = 'OUTSIDE WORK HOURS';
+      }
+
+      // Main Clock
+      document.getElementById('workdaysVal').textContent = pad(workdaysFull, 3);
+      document.getElementById('hoursVal').textContent = pad(workHoursWithinDay, 2);
+      document.getElementById('minsVal').textContent = pad(workMinutes, 2);
+      document.getElementById('secsVal').textContent = pad(workSeconds, 2);
+      document.getElementById('tenthsVal').textContent = pad(workTenths * 10, 2);
+
+      // Left Card: Calendar Time
+      document.getElementById('calTimeRemaining').textContent = `${calDays}d ${calHours}h ${calMins}m ${calSecs}s`;
+      document.getElementById('calTotalDays').textContent = `${formatNumber(totalRemDays, 2)} days`;
+      document.getElementById('calTotalHours').textContent = `${formatNumber(totalRemHours, 1)} hrs`;
+      document.getElementById('calTotalMins').textContent = `${formatNumber(totalRemMins, 0)} min`;
+      document.getElementById('calTotalSecs').textContent = `${formatNumber(totalRemSec, 0)} sec`;
+      document.getElementById('calTimeSpent').textContent = `${calElapsedDays}d ${calElapsedHours}h ${calElapsedMins}m`;
+
+      // Right Card: 8-Hour Workday Breakdown
+      document.getElementById('workWorkdaysRemaining').textContent = `${formatNumber(remWorkdays, 2)} workdays`;
+      document.getElementById('workBusinessHoursLeft').textContent = `${formatNumber(remBizHours, 1)} hrs (${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`;
+      document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days`;
+      document.getElementById('workWorkdaysSpent').textContent = `${formatNumber(elapWorkdays, 2)} workdays`;
+      document.getElementById('workBusinessHoursSpent').textContent = `${formatNumber(elapBizHours, 1)} hrs`;
+      document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
+
+      // Progress
+      document.getElementById('calProgressPct').textContent = `${calPct.toFixed(1)}%`;
+      document.getElementById('calProgressBar').style.width = `${calPct}%`;
+
+      document.getElementById('workProgressPct').textContent = `${workPct.toFixed(1)}%`;
+      document.getElementById('workProgressBar').style.width = `${workPct}%`;
+    }
+
+    // Run immediately and then tick every 50ms for smooth live updates
+    updateClock();
+    setInterval(updateClock, 50);
+  </script>
+</body>
+</html>

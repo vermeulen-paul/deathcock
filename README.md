@@ -27,9 +27,16 @@ A modern .NET console application built with Spectre.Console that renders a live
 
 ## How to Run
 
-### Live Interactive Clock
+### Live Interactive Terminal App (.NET)
 ```bash
 dotnet run
+```
+
+### Static Web Application
+Open [index.html](index.html) in any web browser, or launch with a local server:
+```bash
+# In your terminal or by double clicking index.html
+start index.html
 ```
 
 ### Single Snapshot Frame
