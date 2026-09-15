@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CountdownClock.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e3ca3863e30653b494d093e3527c0c6bef13ac4")]
 [assembly: System.Reflection.AssemblyProductAttribute("CountdownClock.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CountdownClock.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
