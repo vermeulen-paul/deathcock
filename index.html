@@ -221,6 +221,49 @@
       border: 1px solid rgba(100, 116, 139, 0.3);
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .copy-btn {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+      user-select: none;
+    }
+
+    .copy-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      color: #ffffff;
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.96);
+    }
+
+    .copy-btn.copied {
+      background: linear-gradient(135deg, #065f46, #047857);
+      color: #34d399;
+      border-color: #10b981;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+
     .badge .dot {
       width: 8px;
       height: 8px;
@@ -579,9 +622,15 @@
           <h1>PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER</h1>
           <span class="flag-icon">🇺🇸🦅</span>
         </div>
-        <div id="workStatusBadge" class="badge active">
-          <span class="dot"></span>
-          <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸</span>
+        <div class="header-actions">
+          <button class="copy-btn" id="copySummaryBtn" type="button" title="Kopieer actuele countdown samenvatting">
+            <span id="copyIcon">📋</span>
+            <span id="copyText">KOPIEER SUMMARY</span>
+          </button>
+          <div id="workStatusBadge" class="badge active">
+            <span class="dot"></span>
+            <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸</span>
+          </div>
         </div>
       </div>
       <div class="header-details">
@@ -888,6 +937,80 @@
       document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days 🇺🇸`;
       document.getElementById('workWorkWeeksLeft').textContent = `${formatNumber(remWorkWeeks, 2)} weeks`;
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
+    }
+
+    // Clipboard Copy Summary Logic
+    const copyBtn = document.getElementById('copySummaryBtn');
+    const copyIcon = document.getElementById('copyIcon');
+    const copyText = document.getElementById('copyText');
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        const now = new Date();
+        const target = getUpcomingTarget(now);
+        const remBiz = calculateBusinessDuration(now, target);
+
+        const totalRemMs = Math.max(0, target - now);
+        const totalRemSec = totalRemMs / 1000;
+        const totalRemDays = totalRemSec / 86400;
+        const totalRemHours = totalRemSec / 3600;
+
+        const calDays = Math.floor(totalRemMs / (1000 * 60 * 60 * 24));
+        const calHours = Math.floor((totalRemMs / (1000 * 60 * 60)) % 24);
+        const calMins = Math.floor((totalRemMs / (1000 * 60)) % 60);
+        const calSecs = Math.floor((totalRemMs / 1000) % 60);
+
+        const remBizHours = remBiz.businessSeconds / 3600;
+        const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
+        const workHoursWithinDay = Math.floor(remBizHours % HOURS_PER_WORK_DAY);
+        const workMinutes = Math.floor((remBiz.businessSeconds % 3600) / 60);
+        const workSeconds = Math.floor(remBiz.businessSeconds % 60);
+
+        const summaryString = [
+          '🦅🇺🇸 PATRIOT FREEDOM COUNTDOWN SUMMARY 🇺🇸🦅',
+          `📅 Peildatum: ${now.toLocaleString()}`,
+          `🎯 Target Deadline: 30 november @ 17:00:00`,
+          '----------------------------------------',
+          `💼 8-UUR WERKDAGEN COUNTDOWN:`,
+          `   • Resterende Werkdagen (8u): ${remWorkdays.toFixed(2)} werkdagen (${Math.floor(remWorkdays)}d ${workHoursWithinDay}u ${workMinutes}m ${workSeconds}s)`,
+          `   • Resterende Werkuren (09:00-17:00): ${remBizHours.toFixed(1)} uur`,
+          `   • Resterende Weekdagen: ${remBiz.businessDaysCount} dagen`,
+          `   • Resterende 40u Werkweken: ${(remBizHours / 40.0).toFixed(2)} weken`,
+          '----------------------------------------',
+          `🌐 TOTALE KALENDER COUNTDOWN:`,
+          `   • Tijd resterend: ${calDays}d ${calHours}u ${calMins}m ${calSecs}s`,
+          `   • Totale Dagen: ${totalRemDays.toFixed(2)} dagen`,
+          `   • Totale Uren: ${totalRemHours.toFixed(1)} uur`,
+          `   • Totale 8-uurs shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
+          '----------------------------------------',
+          `Status: ${remBiz.isStartInWorkHours ? '● ACTIEVE WERKUREN (09:00 - 17:00)' : '○ BUITEN WERKUREN'}`
+        ].join('\n');
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(summaryString);
+          } else {
+            const tempTa = document.createElement('textarea');
+            tempTa.value = summaryString;
+            document.body.appendChild(tempTa);
+            tempTa.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTa);
+          }
+
+          copyBtn.classList.add('copied');
+          copyIcon.textContent = '✅';
+          copyText.textContent = 'GEKOPIEERD!';
+
+          setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            copyIcon.textContent = '📋';
+            copyText.textContent = 'KOPIEER SUMMARY';
+          }, 2000);
+        } catch (err) {
+          console.error('Clipboard copy failed:', err);
+        }
+      });
     }
 
     // Patriot Click Challenge Gimmick Logic
