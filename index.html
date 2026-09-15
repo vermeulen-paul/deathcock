@@ -3,24 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Countdown Clock & 8h Workday Tracker</title>
+  <title>🦅🇺🇸 Freedom Countdown Clock & 8h Workday Tracker 🇺🇸🦅</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #111827;
-      --card-border: #1f293d;
+      --bg: #070b14;
+      --card-bg: #0f172a;
+      --card-border: #1e293b;
+      --accent-red: #ef4444;
+      --accent-red-glow: rgba(239, 68, 68, 0.35);
+      --accent-white: #f8fafc;
+      --accent-blue: #3b82f6;
+      --accent-blue-glow: rgba(59, 130, 246, 0.35);
       --accent-green: #10b981;
-      --accent-green-glow: rgba(16, 185, 129, 0.25);
       --accent-cyan: #06b6d4;
       --accent-yellow: #f59e0b;
-      --text-primary: #f3f4f6;
-      --text-secondary: #9ca3af;
-      --text-muted: #6b7280;
-      --clock-bg: #09131f;
-      --clock-border: #047857;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --clock-bg: #0a1128;
+      --clock-border: #1d4ed8;
       --pill-bg: #1e293b;
     }
 
@@ -41,16 +45,30 @@
       justify-content: center;
       padding: 24px;
       background-image: 
-        radial-gradient(ellipse at 50% 0%, rgba(6, 182, 212, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 0%, rgba(239, 68, 68, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 0%, rgba(59, 130, 246, 0.20) 0%, transparent 50%),
         radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
     }
 
     .container {
       width: 100%;
-      max-width: 920px;
+      max-width: 940px;
       display: flex;
       flex-direction: column;
       gap: 20px;
+    }
+
+    /* Patriotic Header Banner */
+    .patriot-flag-bar {
+      height: 6px;
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, 
+        #ef4444 0%, #ef4444 33%, 
+        #ffffff 33%, #ffffff 66%, 
+        #3b82f6 66%, #3b82f6 100%
+      );
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
     }
 
     /* Header */
@@ -62,7 +80,8 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+      position: relative;
     }
 
     .header-top {
@@ -81,35 +100,40 @@
 
     .title-group h1 {
       font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      letter-spacing: -0.02em;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .title-group .flag-icon {
+      font-size: 1.35rem;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
+      gap: 8px;
+      padding: 6px 14px;
       border-radius: 9999px;
       font-size: 0.75rem;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       font-family: 'JetBrains Mono', monospace;
     }
 
     .badge.active {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 12px var(--accent-green-glow);
+      background: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 14px var(--accent-red-glow);
     }
 
     .badge.inactive {
-      background: rgba(107, 114, 128, 0.2);
+      background: rgba(100, 116, 139, 0.2);
       color: var(--text-secondary);
-      border: 1px solid rgba(107, 114, 128, 0.3);
+      border: 1px solid rgba(100, 116, 139, 0.3);
     }
 
     .badge .dot {
@@ -121,7 +145,7 @@
 
     .badge.active .dot {
       box-shadow: 0 0 8px currentColor;
-      animation: pulse 2s infinite;
+      animation: pulse 1.8s infinite;
     }
 
     @keyframes pulse {
@@ -134,7 +158,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       font-size: 0.875rem;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -154,12 +178,12 @@
 
     /* Main Clock Display */
     .clock-card {
-      background: linear-gradient(180deg, #0d1e2e 0%, #081420 100%);
-      border: 2px solid var(--accent-green);
+      background: linear-gradient(180deg, #0d1e3d 0%, #071124 100%);
+      border: 2px solid var(--accent-blue);
       border-radius: 20px;
       padding: 28px 24px;
       text-align: center;
-      box-shadow: 0 0 35px var(--accent-green-glow), 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 35px var(--accent-blue-glow), 0 10px 30px rgba(0, 0, 0, 0.7);
       position: relative;
       overflow: hidden;
     }
@@ -168,17 +192,19 @@
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+      height: 3px;
+      background: linear-gradient(90deg, #ef4444, #ffffff, #3b82f6);
     }
 
     .clock-tag {
-      display: inline-block;
-      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent-green);
+      color: #93c5fd;
       margin-bottom: 18px;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -192,21 +218,22 @@
     }
 
     .digit-box {
-      background: #041417;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      background: #061329;
+      border: 1px solid rgba(59, 130, 246, 0.45);
       border-radius: 12px;
       padding: 14px 18px;
       min-width: 105px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
     }
 
     .digit-box.accent {
-      background: #022c22;
-      border-color: var(--accent-green);
-      min-width: 140px;
+      background: #1e1b4b;
+      border-color: #6366f1;
+      min-width: 150px;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.35), inset 0 2px 8px rgba(0,0,0,0.8);
     }
 
     .digit-val {
@@ -215,7 +242,12 @@
       font-weight: 800;
       color: #ffffff;
       line-height: 1;
-      text-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+      text-shadow: 0 0 14px rgba(59, 130, 246, 0.65);
+    }
+
+    .digit-box.accent .digit-val {
+      color: #ffffff;
+      text-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
     }
 
     .digit-box.tenth .digit-val {
@@ -226,17 +258,21 @@
     .digit-lbl {
       margin-top: 8px;
       font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--accent-green);
+      font-weight: 800;
+      color: #60a5fa;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       font-family: 'JetBrains Mono', monospace;
     }
 
+    .digit-box.accent .digit-lbl {
+      color: #f87171;
+    }
+
     .colon-separator {
       font-size: 2rem;
       font-weight: 700;
-      color: rgba(16, 185, 129, 0.5);
+      color: rgba(96, 165, 250, 0.6);
       font-family: 'JetBrains Mono', monospace;
     }
 
@@ -252,15 +288,15 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
     }
 
-    .metric-card.cyan {
-      border-top: 3px solid var(--accent-cyan);
+    .metric-card.red {
+      border-top: 3px solid var(--accent-red);
     }
 
-    .metric-card.green {
-      border-top: 3px solid var(--accent-green);
+    .metric-card.blue {
+      border-top: 3px solid var(--accent-blue);
     }
 
     .card-heading {
@@ -272,8 +308,8 @@
       margin-bottom: 16px;
     }
 
-    .metric-card.cyan .card-heading { color: var(--accent-cyan); }
-    .metric-card.green .card-heading { color: var(--accent-green); }
+    .metric-card.red .card-heading { color: #f87171; }
+    .metric-card.blue .card-heading { color: #60a5fa; }
 
     .metric-rows {
       display: flex;
@@ -287,7 +323,7 @@
       align-items: center;
       font-size: 0.85rem;
       padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .metric-row:last-child {
@@ -328,9 +364,13 @@
     /* Footer */
     .footer {
       text-align: center;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     @media (max-width: 768px) {
@@ -348,7 +388,7 @@
         padding: 10px 12px;
       }
       .digit-box.accent {
-        min-width: 100px;
+        min-width: 110px;
       }
       .digit-val {
         font-size: 1.8rem;
@@ -358,15 +398,19 @@
 </head>
 <body>
   <div class="container">
+    <div class="patriot-flag-bar"></div>
+
     <!-- Header -->
     <header class="header-card">
       <div class="header-top">
         <div class="title-group">
-          <h1>⏳ COUNTDOWN CLOCK & 8H WORKDAY TRACKER</h1>
+          <span class="flag-icon">🦅🇺🇸</span>
+          <h1>PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER</h1>
+          <span class="flag-icon">🇺🇸🦅</span>
         </div>
         <div id="workStatusBadge" class="badge active">
           <span class="dot"></span>
-          <span id="workStatusText">WORK HOURS ACTIVE (09:00 - 17:00)</span>
+          <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸</span>
         </div>
       </div>
       <div class="header-details">
@@ -375,19 +419,19 @@
           <span class="val" id="currentDateDisplay">--</span>
         </div>
         <div class="detail-item right">
-          <span class="label">Target Deadline: </span>
-          <span class="val" id="targetDateDisplay" style="color: var(--accent-yellow);">Nov 30, 17:00:00</span>
+          <span class="label">Freedom Target: </span>
+          <span class="val" id="targetDateDisplay" style="color: var(--accent-yellow);">🇺🇸 Nov 30, 17:00:00 🦅</span>
         </div>
       </div>
     </header>
 
     <!-- Main Live Clock Display (Work Time Remaining) -->
     <section class="clock-card">
-      <div class="clock-tag">💼 REMAINING WORK TIME (8H WORKDAYS)</div>
+      <div class="clock-tag">🦅 REMAINING PATRIOT WORK TIME (8H WORKDAYS) 🇺🇸</div>
       <div class="clock-digits-container" id="clockDigitsContainer">
         <div class="digit-box accent">
           <div class="digit-val" id="workdaysVal">000</div>
-          <div class="digit-lbl">WORKDAYS (8h)</div>
+          <div class="digit-lbl">🇺🇸 WORKDAYS (8h) 🦅</div>
         </div>
         <span class="colon-separator">:</span>
         <div class="digit-box">
@@ -415,16 +459,16 @@
     <!-- Two Column Breakdown (Countdown Only) -->
     <div class="metrics-grid">
       <!-- Total Calendar Countdown -->
-      <div class="metric-card cyan">
-        <div class="card-heading">🌐 Total Calendar Countdown</div>
+      <div class="metric-card red">
+        <div class="card-heading">🗽 Total Calendar Countdown 🇺🇸</div>
         <div class="metric-rows">
           <div class="metric-row highlight">
-            <span class="name">Time Remaining</span>
+            <span class="name">Total Time Remaining</span>
             <span class="val" id="calTimeRemaining">--</span>
           </div>
           <div class="metric-row">
-            <span class="name">Total Days Remaining</span>
-            <span class="val" id="calTotalDays">-- days</span>
+            <span class="name">Total Days to Freedom</span>
+            <span class="val" id="calTotalDays">-- days 🦅</span>
           </div>
           <div class="metric-row">
             <span class="name">Total Hours Remaining</span>
@@ -435,27 +479,27 @@
             <span class="val" id="calTotalMins">-- min</span>
           </div>
           <div class="metric-row">
-            <span class="name">Total Seconds Remaining</span>
-            <span class="val" id="calTotalSecs">-- sec</span>
+            <span class="name">Total Seconds of Valor</span>
+            <span class="val" id="calTotalSecs">-- sec 🇺🇸</span>
           </div>
         </div>
       </div>
 
       <!-- 8-Hour Workday Countdown -->
-      <div class="metric-card green">
-        <div class="card-heading">💼 8-Hour Workday Countdown</div>
+      <div class="metric-card blue">
+        <div class="card-heading">🦅 8-Hour Workday Countdown 🇺🇸</div>
         <div class="metric-rows">
           <div class="metric-row highlight-green">
-            <span class="name">Workdays Remaining (8h/day)</span>
-            <span class="val" id="workWorkdaysRemaining">-- workdays</span>
+            <span class="name">Workdays of Grit Remaining</span>
+            <span class="val" id="workWorkdaysRemaining">-- workdays 🦅</span>
           </div>
           <div class="metric-row">
-            <span class="name">Business Hours Left (09-17)</span>
+            <span class="name">Duty Hours Left (09:00-17:00)</span>
             <span class="val" id="workBusinessHoursLeft">-- hrs</span>
           </div>
           <div class="metric-row">
-            <span class="name">Mon-Fri Business Days Left</span>
-            <span class="val" id="workBusinessDaysCount">-- days</span>
+            <span class="name">Patriot Weekdays Left</span>
+            <span class="val" id="workBusinessDaysCount">-- days 🇺🇸</span>
           </div>
           <div class="metric-row">
             <span class="name">Standard 40h Work Weeks Left</span>
@@ -471,7 +515,7 @@
 
     <!-- Footer -->
     <div class="footer">
-      Pure static HTML/JS/CSS • Target: November 30 @ 17:00 • Precision sub-second live countdown
+      <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision sub-second live countdown 🇺🇸</span>
     </div>
   </div>
 

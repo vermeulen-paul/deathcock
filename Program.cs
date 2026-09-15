@@ -12,7 +12,7 @@ public class Program
     public static async Task Main(string[] args)
     {
         Console.OutputEncoding = Encoding.UTF8;
-        Console.Title = "Countdown Clock - Target: Nov 30, 17:00";
+        Console.Title = "🦅🇺🇸 Freedom Countdown Clock - Target: Nov 30, 17:00 🇺🇸🦅";
 
         bool runOnce = false;
         DateTime? customTarget = null;
@@ -130,23 +130,23 @@ public class Program
         headerTable.AddColumn(new TableColumn("Right").RightAligned());
 
         string workStatusBadge = metrics.IsCurrentlyWorkHours
-            ? "[bold white on darkgreen] ● WORK HOURS ACTIVE (09:00 - 17:00) [/]"
-            : "[bold grey on grey23] ○ OUTSIDE WORK HOURS [/]";
+            ? "[bold white on red] 🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸 [/]"
+            : "[bold grey on grey23] 🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸 [/]";
 
         headerTable.AddRow(
-            new Markup("[bold cyan]⏳ COUNTDOWN CLOCK & 8H WORKDAY TRACKER[/]"),
+            new Markup("[bold red]🦅🇺🇸 PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER 🇺🇸🦅[/]"),
             new Markup(workStatusBadge)
         );
 
         headerTable.AddRow(
             new Markup($"[dim]Current Time:[/] [bold white]{metrics.Now:yyyy-MM-dd HH:mm:ss.ff (dddd)}[/]"),
-            new Markup($"[dim]Target Deadline:[/] [bold yellow]{metrics.Target:MMMM dd, yyyy @ 17:00:00 (dddd)}[/]")
+            new Markup($"[dim]Freedom Target:[/] [bold yellow]🇺🇸 {metrics.Target:MMMM dd, yyyy @ 17:00:00 (dddd)} 🦅[/]")
         );
 
         rootGrid.AddRow(new Panel(headerTable)
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Cyan3)
-            .Header("[bold cyan] TARGET: NOVEMBER 30 @ 17:00 [/]", Justify.Center));
+            .BorderColor(Color.Red)
+            .Header("[bold red] 🦅🇺🇸 MISSION TARGET: NOVEMBER 30 @ 17:00 🇺🇸🦅 [/]", Justify.Center));
 
         // 2. Big Clock Display (Remaining Work Time in 8h Workdays)
         var clockGrid = new Grid();
@@ -154,25 +154,25 @@ public class Program
 
         if (metrics.HasReachedTarget)
         {
-            clockGrid.AddRow(new Markup("[bold red blink]🎯 TARGET DEADLINE REACHED! 🎯[/]"));
+            clockGrid.AddRow(new Markup("[bold red blink]🦅🇺🇸 FREEDOM ACHIEVED! TARGET REACHED! 🇺🇸🦅[/]"));
         }
         else
         {
-            var clockDisplay = new Table().Border(TableBorder.Rounded).BorderColor(Color.Green);
+            var clockDisplay = new Table().Border(TableBorder.Rounded).BorderColor(Color.Blue);
             clockDisplay.AddColumns(
-                new TableColumn("[bold green]WORKDAYS (8h)[/]").Centered(),
-                new TableColumn("[bold green]HOURS[/]").Centered(),
-                new TableColumn("[bold green]MINUTES[/]").Centered(),
-                new TableColumn("[bold green]SECONDS[/]").Centered(),
-                new TableColumn("[bold green]TENTHS[/]").Centered()
+                new TableColumn("[bold red]🇺🇸 WORKDAYS (8h)[/]").Centered(),
+                new TableColumn("[bold white]HOURS[/]").Centered(),
+                new TableColumn("[bold blue]MINUTES[/]").Centered(),
+                new TableColumn("[bold red]SECONDS[/]").Centered(),
+                new TableColumn("[bold white]TENTHS[/]").Centered()
             );
 
             clockDisplay.AddRow(
-                $"[bold white on darkgreen]     {metrics.RemainingFullWorkdays:D3}     [/]",
-                $"[bold white on darkgreen]   {metrics.RemainingWorkHoursWithinDay:D2}   [/]",
-                $"[bold white on darkgreen]   {metrics.RemainingWorkMinutes:D2}   [/]",
-                $"[bold white on darkgreen]   {metrics.RemainingWorkSeconds:D2}   [/]",
-                $"[bold grey on darkgreen]   {metrics.RemainingWorkMilliseconds / 100:D1}0   [/]"
+                $"[bold white on darkblue]    🦅 {metrics.RemainingFullWorkdays:D3} 🦅    [/]",
+                $"[bold white on darkblue]   {metrics.RemainingWorkHoursWithinDay:D2}   [/]",
+                $"[bold white on darkblue]   {metrics.RemainingWorkMinutes:D2}   [/]",
+                $"[bold white on darkblue]   {metrics.RemainingWorkSeconds:D2}   [/]",
+                $"[bold grey on darkblue]   {metrics.RemainingWorkMilliseconds / 100:D1}0   [/]"
             );
 
             clockGrid.AddRow(new Align(clockDisplay, HorizontalAlignment.Center));
@@ -180,8 +180,8 @@ public class Program
 
         rootGrid.AddRow(new Panel(clockGrid)
             .Border(BoxBorder.Heavy)
-            .BorderColor(Color.Green)
-            .Header("[bold green] 💼 REMAINING WORK TIME (8H WORKDAYS) [/]", Justify.Center));
+            .BorderColor(Color.Blue)
+            .Header("[bold red] 🦅 [/][bold white]REMAINING PATRIOT WORK TIME (8H DAYS)[/][bold blue] 🇺🇸 [/]", Justify.Center));
 
         // 3. Metric Breakdown Cards
         var summaryGrid = new Grid();
@@ -190,36 +190,36 @@ public class Program
 
         // Left Card: Total Calendar Countdown
         var totalTimeTable = new Table().Border(TableBorder.Simple).Expand();
-        totalTimeTable.AddColumn(new TableColumn("[bold cyan]Calendar Countdown Metric[/]"));
-        totalTimeTable.AddColumn(new TableColumn("[bold cyan]Value[/]").RightAligned());
+        totalTimeTable.AddColumn(new TableColumn("[bold red]🗽 Liberty Calendar Metric[/]"));
+        totalTimeTable.AddColumn(new TableColumn("[bold white]Value[/]").RightAligned());
 
-        totalTimeTable.AddRow("[bold white]Time Remaining[/]", $"[bold cyan]{metrics.TotalRemaining.Days}d {metrics.TotalRemaining.Hours}h {metrics.TotalRemaining.Minutes}m {metrics.TotalRemaining.Seconds}s[/]");
-        totalTimeTable.AddRow("[grey]Total Days Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalDays:N2}[/] days");
+        totalTimeTable.AddRow("[bold white]Total Time Remaining[/]", $"[bold cyan]{metrics.TotalRemaining.Days}d {metrics.TotalRemaining.Hours}h {metrics.TotalRemaining.Minutes}m {metrics.TotalRemaining.Seconds}s[/]");
+        totalTimeTable.AddRow("[grey]Total Days to Freedom[/]", $"[bold white]{metrics.TotalRemaining.TotalDays:N2}[/] days 🦅");
         totalTimeTable.AddRow("[grey]Total Hours Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalHours:N1}[/] hours");
         totalTimeTable.AddRow("[grey]Total Minutes Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalMinutes:N0}[/] min");
-        totalTimeTable.AddRow("[grey]Total Seconds Remaining[/]", $"[bold white]{metrics.TotalRemaining.TotalSeconds:N0}[/] sec");
+        totalTimeTable.AddRow("[grey]Total Seconds of Valor[/]", $"[bold white]{metrics.TotalRemaining.TotalSeconds:N0}[/] sec 🇺🇸");
 
         var totalTimePanel = new Panel(totalTimeTable)
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Cyan1)
-            .Header("[bold cyan] 🌐 Total Calendar Countdown [/]", Justify.Left);
+            .BorderColor(Color.Red)
+            .Header("[bold red] 🗽 Total Calendar Countdown 🇺🇸 [/]", Justify.Left);
 
         // Right Card: 8-Hour Workday Countdown
         var workdayTable = new Table().Border(TableBorder.Simple).Expand();
-        workdayTable.AddColumn(new TableColumn("[bold green]Workday Countdown (8h/day)[/]"));
-        workdayTable.AddColumn(new TableColumn("[bold green]Value[/]").RightAligned());
+        workdayTable.AddColumn(new TableColumn("[bold blue]🦅 Hardworking American Metric (8h/day)[/]"));
+        workdayTable.AddColumn(new TableColumn("[bold white]Value[/]").RightAligned());
 
         workdayTable.AddRow(
-            "[bold white]Workdays Remaining (8h/day)[/]",
-            $"[bold green]{metrics.RemainingWorkdays:N2}[/] [dim]workdays[/]"
+            "[bold white]Workdays of Grit Remaining[/]",
+            $"[bold green]{metrics.RemainingWorkdays:N2}[/] [dim]workdays 🦅[/]"
         );
         workdayTable.AddRow(
-            "[grey]Business Hours Left (09-17)[/]",
+            "[grey]Duty Hours Left (09:00-17:00)[/]",
             $"[bold green]{metrics.RemainingBusinessTime.TotalHours:N1}[/] [dim]hours ({metrics.RemainingBusinessTime.Hours}h {metrics.RemainingBusinessTime.Minutes}m {metrics.RemainingBusinessTime.Seconds}s)[/]"
         );
         workdayTable.AddRow(
-            "[grey]Mon-Fri Business Days Left[/]",
-            $"[bold green]{metrics.RemainingBusinessDaysCount}[/] [dim]calendar days[/]"
+            "[grey]Patriot Weekdays Left[/]",
+            $"[bold green]{metrics.RemainingBusinessDaysCount}[/] [dim]calendar days 🇺🇸[/]"
         );
         workdayTable.AddRow(
             "[grey]Standard 40h Work Weeks Left[/]",
@@ -232,15 +232,15 @@ public class Program
 
         var workdayPanel = new Panel(workdayTable)
             .Border(BoxBorder.Rounded)
-            .BorderColor(Color.Green)
-            .Header("[bold green] 💼 8-Hour Workday Countdown [/]", Justify.Left);
+            .BorderColor(Color.Blue)
+            .Header("[bold blue] 🦅 8-Hour Workday Countdown 🇺🇸 [/]", Justify.Left);
 
         summaryGrid.AddRow(totalTimePanel, workdayPanel);
         rootGrid.AddRow(summaryGrid);
 
         // 4. Controls / Footer
         rootGrid.AddRow(new Align(
-            new Markup("[dim grey]Controls: Press [/][bold white]Q[/][dim grey] or [/][bold white]ESC[/][dim grey] or [/][bold white]Ctrl+C[/][dim grey] to quit. Live precision: 100ms.[/]"),
+            new Markup("[dim grey]🦅 Stand Tall, Patriot! Press [/][bold white]Q[/][dim grey] or [/][bold white]ESC[/][dim grey] or [/][bold white]Ctrl+C[/][dim grey] to quit. Live precision: 100ms. 🇺🇸[/]"),
             HorizontalAlignment.Center
         ));
 
