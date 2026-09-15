@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CountdownClock.csproj" />
+  <Project Path="CountdownClock.Tests/CountdownClock.Tests.csproj" />
+</Solution>
