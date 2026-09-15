@@ -448,11 +448,6 @@
           <div class="digit-val" id="secsVal">00</div>
           <div class="digit-lbl">SECONDS</div>
         </div>
-        <span class="colon-separator">.</span>
-        <div class="digit-box tenth">
-          <div class="digit-val" id="tenthsVal">00</div>
-          <div class="digit-lbl">TENTHS</div>
-        </div>
       </div>
     </section>
 
@@ -515,7 +510,7 @@
 
     <!-- Footer -->
     <div class="footer">
-      <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision sub-second live countdown 🇺🇸</span>
+      <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision live countdown 🇺🇸</span>
     </div>
   </div>
 
@@ -628,27 +623,26 @@
       const workHoursWithinDay = Math.floor(remBizHours % HOURS_PER_WORK_DAY);
       const workMinutes = Math.floor((remBiz.businessSeconds % 3600) / 60);
       const workSeconds = Math.floor(remBiz.businessSeconds % 60);
-      const workTenths = Math.floor(((remBiz.businessSeconds * 1000) % 1000) / 100);
 
       // DOM Updates
       // Header
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       
       const dayStr = daysOfWeek[now.getDay()];
-      const nowStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(Math.floor(now.getMilliseconds()/10))} (${dayStr})`;
+      const nowStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} (${dayStr})`;
       document.getElementById('currentDateDisplay').textContent = nowStr;
 
       const targetDayStr = daysOfWeek[target.getDay()];
-      document.getElementById('targetDateDisplay').textContent = `November 30, ${target.getFullYear()} @ 17:00:00 (${targetDayStr})`;
+      document.getElementById('targetDateDisplay').textContent = `🇺🇸 November 30, ${target.getFullYear()} @ 17:00:00 (${targetDayStr}) 🦅`;
 
       const badge = document.getElementById('workStatusBadge');
       const badgeText = document.getElementById('workStatusText');
       if (remBiz.isStartInWorkHours) {
         badge.className = 'badge active';
-        badgeText.textContent = 'WORK HOURS ACTIVE (09:00 - 17:00)';
+        badgeText.textContent = '🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸';
       } else {
         badge.className = 'badge inactive';
-        badgeText.textContent = 'OUTSIDE WORK HOURS';
+        badgeText.textContent = '🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸';
       }
 
       // Main Clock
@@ -656,26 +650,25 @@
       document.getElementById('hoursVal').textContent = pad(workHoursWithinDay, 2);
       document.getElementById('minsVal').textContent = pad(workMinutes, 2);
       document.getElementById('secsVal').textContent = pad(workSeconds, 2);
-      document.getElementById('tenthsVal').textContent = pad(workTenths * 10, 2);
 
       // Left Card: Calendar Countdown
       document.getElementById('calTimeRemaining').textContent = `${calDays}d ${calHours}h ${calMins}m ${calSecs}s`;
-      document.getElementById('calTotalDays').textContent = `${formatNumber(totalRemDays, 2)} days`;
+      document.getElementById('calTotalDays').textContent = `${formatNumber(totalRemDays, 2)} days 🦅`;
       document.getElementById('calTotalHours').textContent = `${formatNumber(totalRemHours, 1)} hrs`;
       document.getElementById('calTotalMins').textContent = `${formatNumber(totalRemMins, 0)} min`;
-      document.getElementById('calTotalSecs').textContent = `${formatNumber(totalRemSec, 0)} sec`;
+      document.getElementById('calTotalSecs').textContent = `${formatNumber(totalRemSec, 0)} sec 🇺🇸`;
 
       // Right Card: 8-Hour Workday Countdown
-      document.getElementById('workWorkdaysRemaining').textContent = `${formatNumber(remWorkdays, 2)} workdays`;
+      document.getElementById('workWorkdaysRemaining').textContent = `${formatNumber(remWorkdays, 2)} workdays 🦅`;
       document.getElementById('workBusinessHoursLeft').textContent = `${formatNumber(remBizHours, 1)} hrs (${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`;
-      document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days`;
+      document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days 🇺🇸`;
       document.getElementById('workWorkWeeksLeft').textContent = `${formatNumber(remWorkWeeks, 2)} weeks`;
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
     }
 
-    // Run immediately and then tick every 50ms for smooth live updates
+    // Run immediately and then tick every 200ms for smooth live updates
     updateClock();
-    setInterval(updateClock, 50);
+    setInterval(updateClock, 200);
   </script>
 </body>
 </html>

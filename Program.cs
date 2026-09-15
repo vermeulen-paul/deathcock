@@ -97,7 +97,7 @@ public class Program
 
                         try
                         {
-                            await Task.Delay(100, cts.Token);
+                            await Task.Delay(250, cts.Token);
                         }
                         catch (TaskCanceledException)
                         {
@@ -163,16 +163,14 @@ public class Program
                 new TableColumn("[bold red]🇺🇸 WORKDAYS (8h)[/]").Centered(),
                 new TableColumn("[bold white]HOURS[/]").Centered(),
                 new TableColumn("[bold blue]MINUTES[/]").Centered(),
-                new TableColumn("[bold red]SECONDS[/]").Centered(),
-                new TableColumn("[bold white]TENTHS[/]").Centered()
+                new TableColumn("[bold red]SECONDS[/]").Centered()
             );
 
             clockDisplay.AddRow(
                 $"[bold white on darkblue]    🦅 {metrics.RemainingFullWorkdays:D3} 🦅    [/]",
                 $"[bold white on darkblue]   {metrics.RemainingWorkHoursWithinDay:D2}   [/]",
                 $"[bold white on darkblue]   {metrics.RemainingWorkMinutes:D2}   [/]",
-                $"[bold white on darkblue]   {metrics.RemainingWorkSeconds:D2}   [/]",
-                $"[bold grey on darkblue]   {metrics.RemainingWorkMilliseconds / 100:D1}0   [/]"
+                $"[bold white on darkblue]   {metrics.RemainingWorkSeconds:D2}   [/]"
             );
 
             clockGrid.AddRow(new Align(clockDisplay, HorizontalAlignment.Center));
@@ -240,7 +238,7 @@ public class Program
 
         // 4. Controls / Footer
         rootGrid.AddRow(new Align(
-            new Markup("[dim grey]🦅 Stand Tall, Patriot! Press [/][bold white]Q[/][dim grey] or [/][bold white]ESC[/][dim grey] or [/][bold white]Ctrl+C[/][dim grey] to quit. Live precision: 100ms. 🇺🇸[/]"),
+            new Markup("[dim grey]🦅 Stand Tall, Patriot! Press [/][bold white]Q[/][dim grey] or [/][bold white]ESC[/][dim grey] or [/][bold white]Ctrl+C[/][dim grey] to quit. Live precision: 1s. 🇺🇸[/]"),
             HorizontalAlignment.Center
         ));
 
