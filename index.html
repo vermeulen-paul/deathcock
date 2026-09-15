@@ -967,23 +967,28 @@
         const workSeconds = Math.floor(remBiz.businessSeconds % 60);
 
         const summaryString = [
+          '========================================',
           '🦅🇺🇸 PATRIOT FREEDOM COUNTDOWN SUMMARY 🇺🇸🦅',
-          `📅 Peildatum: ${now.toLocaleString()}`,
+          '========================================',
+          `⭐ RESTERENDE WERKDAGEN (8u): ${remWorkdays.toFixed(2)} WERKDAGEN ⭐`,
+          `⏱️  (${Math.floor(remWorkdays)} werkdagen, ${workHoursWithinDay}u ${workMinutes}m ${workSeconds}s)`,
+          '========================================',
           `🎯 Target Deadline: 30 november @ 17:00:00`,
+          `📅 Peildatum: ${now.toLocaleString()}`,
+          `🏢 Status: ${remBiz.isStartInWorkHours ? '● ACTIEVE WERKUREN (09:00 - 17:00)' : '○ BUITEN WERKUREN'}`,
           '----------------------------------------',
           `💼 8-UUR WERKDAGEN COUNTDOWN:`,
-          `   • Resterende Werkdagen (8u): ${remWorkdays.toFixed(2)} werkdagen (${Math.floor(remWorkdays)}d ${workHoursWithinDay}u ${workMinutes}m ${workSeconds}s)`,
+          `   • Resterende Werkdagen (8u): ${remWorkdays.toFixed(2)} werkdagen`,
           `   • Resterende Werkuren (09:00-17:00): ${remBizHours.toFixed(1)} uur`,
           `   • Resterende Weekdagen: ${remBiz.businessDaysCount} dagen`,
           `   • Resterende 40u Werkweken: ${(remBizHours / 40.0).toFixed(2)} weken`,
           '----------------------------------------',
-          `🌐 TOTALE KALENDER COUNTDOWN:`,
+          `🌐 TOTALE KALENDER COUNTDOWN (24/7):`,
           `   • Tijd resterend: ${calDays}d ${calHours}u ${calMins}m ${calSecs}s`,
           `   • Totale Dagen: ${totalRemDays.toFixed(2)} dagen`,
           `   • Totale Uren: ${totalRemHours.toFixed(1)} uur`,
           `   • Totale 8-uurs shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
-          '----------------------------------------',
-          `Status: ${remBiz.isStartInWorkHours ? '● ACTIEVE WERKUREN (09:00 - 17:00)' : '○ BUITEN WERKUREN'}`
+          '========================================'
         ].join('\n');
 
         try {
