@@ -58,7 +58,7 @@
       gap: 20px;
     }
 
-    /* Patriotic Header Banner */
+    /* Patriotic Header Banner & Click Challenge Bar */
     .patriot-flag-bar {
       height: 6px;
       width: 100%;
@@ -69,6 +69,91 @@
         #3b82f6 66%, #3b82f6 100%
       );
       box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Gimmick: Click Challenge Bar (in the border/header area) */
+    .challenge-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px dashed rgba(239, 68, 68, 0.4);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .challenge-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+    }
+
+    .challenge-title {
+      font-weight: 700;
+      color: #fca5a5;
+    }
+
+    .challenge-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .click-btn {
+      background: linear-gradient(135deg, #1e1b4b, #1e293b);
+      color: #ffffff;
+      border: 1px solid rgba(59, 130, 246, 0.6);
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+      user-select: none;
+    }
+
+    .click-btn:hover {
+      background: linear-gradient(135deg, #312e81, #1e3a8a);
+      border-color: #60a5fa;
+      transform: translateY(-1px);
+      box-shadow: 0 0 16px rgba(59, 130, 246, 0.6);
+    }
+
+    .click-btn:active {
+      transform: scale(0.95);
+      background: #b91c1c;
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    }
+
+    .click-counter-badge {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-weight: 800;
+      color: #facc15;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .click-rank {
+      font-size: 0.72rem;
+      color: #38bdf8;
+      font-weight: 600;
     }
 
     /* Header */
@@ -467,6 +552,25 @@
   <div class="container">
     <div class="patriot-flag-bar"></div>
 
+    <!-- Gimmick: Click Challenge In Border -->
+    <div class="challenge-bar" id="patriotChallengeBar">
+      <div class="challenge-info">
+        <span style="font-size: 1.1rem;">🎯</span>
+        <span class="challenge-title">PATRIOT CLICK CHALLENGE:</span>
+        <span id="challengePrompt">Kun jij 50 Patriot-kliks volbrengen voor maximale vrijheid?</span>
+      </div>
+      <div class="challenge-actions">
+        <span class="click-rank" id="patriotRank">Rank: Recruit 🎖️</span>
+        <div class="click-counter-badge">
+          <span>🦅 Kliks:</span>
+          <span id="patriotClickCount">0</span>
+        </div>
+        <button class="click-btn" id="patriotClickBtn" type="button">
+          <span>🇺🇸 KLIK HIER!</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Header -->
     <header class="header-card">
       <div class="header-top">
@@ -784,6 +888,65 @@
       document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days 🇺🇸`;
       document.getElementById('workWorkWeeksLeft').textContent = `${formatNumber(remWorkWeeks, 2)} weeks`;
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
+    }
+
+    // Patriot Click Challenge Gimmick Logic
+    let patriotClicks = 0;
+    const clickBtn = document.getElementById('patriotClickBtn');
+    const clickCountEl = document.getElementById('patriotClickCount');
+    const clickRankEl = document.getElementById('patriotRank');
+    const challengePromptEl = document.getElementById('challengePrompt');
+
+    function getPatriotRank(count) {
+      if (count >= 100) return 'Rank: Legend of Liberty 🌟🇺🇸';
+      if (count >= 50) return 'Rank: Patriot Commander ⭐';
+      if (count >= 25) return 'Rank: Eagle Major 🦅';
+      if (count >= 10) return 'Rank: Freedom Fighter 🗽';
+      return 'Rank: Recruit 🎖️';
+    }
+
+    if (clickBtn) {
+      clickBtn.addEventListener('click', (e) => {
+        patriotClicks++;
+        clickCountEl.textContent = patriotClicks;
+        clickRankEl.textContent = getPatriotRank(patriotClicks);
+
+        if (patriotClicks === 50) {
+          challengePromptEl.textContent = '🏆 50 KLIKS BEREIKT! Supercharged Freedom geactiveerd! 🦅🇺🇸';
+          challengePromptEl.style.color = '#4ade80';
+          challengePromptEl.style.fontWeight = '800';
+        } else if (patriotClicks > 50) {
+          challengePromptEl.textContent = `⚡ Maximale Patriot Power: ${patriotClicks} kliks! 🦅`;
+        }
+
+        // Floating +1 Eagle effect
+        const rect = clickBtn.getBoundingClientRect();
+        const floater = document.createElement('span');
+        floater.textContent = '+1 🦅';
+        floater.style.position = 'fixed';
+        floater.style.left = `${e.clientX || (rect.left + rect.width / 2)}px`;
+        floater.style.top = `${e.clientY || rect.top}px`;
+        floater.style.color = '#facc15';
+        floater.style.fontWeight = '800';
+        floater.style.fontSize = '0.9rem';
+        floater.style.pointerEvents = 'none';
+        floater.style.zIndex = '9999';
+        floater.style.transition = 'all 0.65s ease-out';
+        floater.style.transform = 'translate(-50%, 0) scale(1)';
+        floater.style.opacity = '1';
+        document.body.appendChild(floater);
+
+        requestAnimationFrame(() => {
+          floater.style.transform = 'translate(-50%, -35px) scale(1.3)';
+          floater.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+          if (floater.parentNode) {
+            document.body.removeChild(floater);
+          }
+        }, 700);
+      });
     }
 
     // Run immediately and then tick every 200ms for smooth live updates
