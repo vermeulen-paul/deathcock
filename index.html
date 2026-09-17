@@ -260,6 +260,35 @@
       gap: 6px;
     }
 
+    .sound-toggle {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      color: #f8fafc;
+      border: 1px solid rgba(250, 204, 21, 0.5);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .sound-toggle:hover {
+      background: linear-gradient(135deg, #374151, #1f2937);
+      border-color: rgba(250, 204, 21, 0.9);
+      transform: translateY(-1px);
+    }
+
+    .sound-toggle.muted {
+      border-color: rgba(148, 163, 184, 0.8);
+      color: #cbd5e1;
+      background: linear-gradient(135deg, #1f2937, #0f172a);
+    }
+
     .click-rank {
       font-size: 0.72rem;
       color: #38bdf8;
@@ -1192,6 +1221,10 @@
         <button class="click-btn" id="patriotClickBtn" type="button">
           <span><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> CLICK HERE!</span>
         </button>
+        <button class="sound-toggle" id="soundToggleBtn" type="button" aria-pressed="true">
+          <span id="soundToggleIcon">🔊</span>
+          <span id="soundToggleText">SOUND: ON</span>
+        </button>
       </div>
     </div>
 
@@ -1364,6 +1397,151 @@
     const WORK_DAY_END_HOUR = 17;   // 17:00 (8h work day)
     const HOURS_PER_WORK_DAY = 8.0;
     const US_FLAG_MARKUP = '<img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag">';
+    const soundState = {
+      enabled: localStorage.getItem('patriotFireworkMuted') !== 'true',
+      audioCtx: null,
+      completionSoundPlayed: false,
+      fireworkReady: true,
+      lastFireworkBurstAt: 0,
+      fireworkBurstCooldownMs: 4300,
+      fireworkBurstLeadMs: 2200
+    };
+
+    function updateSoundToggleUI() {
+      const toggle = document.getElementById('soundToggleBtn');
+      const icon = document.getElementById('soundToggleIcon');
+      const text = document.getElementById('soundToggleText');
+      if (!toggle || !icon || !text) return;
+
+      const enabled = soundState.enabled;
+      toggle.classList.toggle('muted', !enabled);
+      toggle.setAttribute('aria-pressed', String(enabled));
+      icon.textContent = enabled ? '🔊' : '🔇';
+      text.textContent = enabled ? 'SOUND: ON' : 'SOUND: OFF';
+    }
+
+    function activateAudio() {
+      soundState.fireworkReady = true;
+      if (!soundState.enabled) return null;
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return null;
+      if (!soundState.audioCtx) {
+        soundState.audioCtx = new AudioCtor();
+      }
+      if (soundState.audioCtx.state === 'suspended') {
+        soundState.audioCtx.resume();
+      }
+      return soundState.audioCtx;
+    }
+
+    function ensureAudioContext() {
+      return activateAudio();
+    }
+
+    function playFireworkSound() {
+      if (!soundState.enabled || !soundState.fireworkReady) return;
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+
+      const now = performance.now();
+      if (now - soundState.lastFireworkBurstAt < soundState.fireworkBurstCooldownMs) {
+        return;
+      }
+      soundState.lastFireworkBurstAt = now;
+
+      const startTime = ctx.currentTime;
+
+      const burstOsc = ctx.createOscillator();
+      const burstGain = ctx.createGain();
+      const bodyOsc = ctx.createOscillator();
+      const bodyGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      burstOsc.type = 'triangle';
+      burstOsc.frequency.setValueAtTime(620, startTime);
+      burstOsc.frequency.exponentialRampToValueAtTime(140, startTime + 0.18);
+
+      bodyOsc.type = 'sine';
+      bodyOsc.frequency.setValueAtTime(220, startTime);
+      bodyOsc.frequency.exponentialRampToValueAtTime(55, startTime + 0.34);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2600, startTime);
+      filter.Q.value = 0.75;
+
+      burstGain.gain.setValueAtTime(0.0001, startTime);
+      burstGain.gain.exponentialRampToValueAtTime(0.18, startTime + 0.015);
+      burstGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.38);
+
+      bodyGain.gain.setValueAtTime(0.0001, startTime);
+      bodyGain.gain.exponentialRampToValueAtTime(0.09, startTime + 0.02);
+      bodyGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.42);
+
+      const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 0.4, ctx.sampleRate);
+      const noiseData = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < noiseData.length; i++) {
+        noiseData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / noiseData.length, 1.2);
+      }
+
+      const noiseSource = ctx.createBufferSource();
+      const noiseFilter = ctx.createBiquadFilter();
+      const noiseGain = ctx.createGain();
+      noiseSource.buffer = noiseBuffer;
+      noiseFilter.type = 'highpass';
+      noiseFilter.frequency.setValueAtTime(2400, startTime);
+      noiseGain.gain.setValueAtTime(0.0001, startTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.13, startTime + 0.01);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.2);
+
+      burstOsc.connect(burstGain);
+      bodyOsc.connect(bodyGain);
+      burstGain.connect(filter);
+      bodyGain.connect(filter);
+      filter.connect(ctx.destination);
+
+      noiseSource.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+
+      burstOsc.start(startTime);
+      bodyOsc.start(startTime);
+      noiseSource.start(startTime);
+      burstOsc.stop(startTime + 0.38);
+      bodyOsc.stop(startTime + 0.42);
+      noiseSource.stop(startTime + 0.2);
+    }
+
+    function wireFireworkAudio() {
+      const fireworkEls = document.querySelectorAll('.firework');
+      fireworkEls.forEach((fireworkEl) => {
+        let burstLocked = false;
+        const triggerBurst = () => {
+          if (burstLocked) return;
+          burstLocked = true;
+
+          setTimeout(() => {
+            activateAudio();
+            playFireworkSound();
+          }, soundState.fireworkBurstLeadMs);
+
+          setTimeout(() => {
+            burstLocked = false;
+          }, soundState.fireworkBurstCooldownMs);
+        };
+
+        fireworkEl.addEventListener('animationstart', triggerBurst);
+        fireworkEl.addEventListener('animationiteration', triggerBurst);
+      });
+    }
+
+    function toggleSound() {
+      soundState.enabled = !soundState.enabled;
+      localStorage.setItem('patriotFireworkMuted', String(!soundState.enabled));
+      updateSoundToggleUI();
+      if (soundState.enabled) {
+        playFireworkSound();
+      }
+    }
 
     function getUpcomingTarget(now) {
       const thisYearTarget = new Date(now.getFullYear(), 10, 30, 17, 0, 0, 0); // Month is 0-indexed: 10 = November
@@ -1497,9 +1675,18 @@
     function updateClock() {
       const now = new Date();
       const target = getUpcomingTarget(now);
+      const totalRemMs = Math.max(0, target - now);
+      const reachedTarget = totalRemMs === 0;
+
+      if (reachedTarget && !soundState.completionSoundPlayed) {
+        playFireworkSound();
+        soundState.completionSoundPlayed = true;
+      }
+      if (!reachedTarget) {
+        soundState.completionSoundPlayed = false;
+      }
 
       // Total calendar remaining time
-      const totalRemMs = Math.max(0, target - now);
       const totalRemSec = totalRemMs / 1000;
       const totalRemDays = totalRemSec / 86400;
       const totalRemHours = totalRemSec / 3600;
@@ -1650,6 +1837,7 @@
     const clickCountEl = document.getElementById('patriotClickCount');
     const clickRankEl = document.getElementById('patriotRank');
     const challengePromptEl = document.getElementById('challengePrompt');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
 
     function getPatriotRank(count) {
       if (count >= 100) return `Rank: Legend of Liberty 🌟${US_FLAG_MARKUP}`;
@@ -1663,14 +1851,16 @@
       clickBtn.addEventListener('click', (e) => {
         patriotClicks++;
         clickCountEl.textContent = patriotClicks;
-          clickRankEl.innerHTML = getPatriotRank(patriotClicks);
+        clickRankEl.innerHTML = getPatriotRank(patriotClicks);
 
         if (patriotClicks === 50) {
           challengePromptEl.textContent = '🏆 50 CLICKS REACHED! Supercharged freedom activated! 🦅🇺🇸';
           challengePromptEl.style.color = '#4ade80';
           challengePromptEl.style.fontWeight = '800';
+          playFireworkSound();
         } else if (patriotClicks > 50) {
           challengePromptEl.textContent = `⚡ Maximum Patriot power: ${patriotClicks} clicks! 🦅`;
+          playFireworkSound();
         }
 
         // Floating +1 Eagle effect
@@ -1827,6 +2017,25 @@
         });
       });
     }
+
+    if (soundToggleBtn) {
+      soundToggleBtn.addEventListener('click', () => {
+        activateAudio();
+        toggleSound();
+      });
+    }
+
+    document.addEventListener('pointerdown', activateAudio, { once: true });
+    document.addEventListener('keydown', activateAudio, { once: true });
+    document.addEventListener('visibilitychange', () => {
+      activateAudio();
+    });
+    window.addEventListener('focus', activateAudio);
+    window.addEventListener('load', activateAudio);
+
+    wireFireworkAudio();
+    updateSoundToggleUI();
+    activateAudio();
 
     // Run immediately and then tick every 200ms for smooth live updates
     updateClock();
