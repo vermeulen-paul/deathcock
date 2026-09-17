@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🦅 USA Freedom Countdown Clock & 8h Workday Tracker USA 🦅</title>
+  <title>🦅 Freedom Countdown Clock & 8h Workday Tracker 🦅</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -376,6 +376,12 @@
       animation: label-flicker 4s ease-in-out infinite;
     }
 
+    .airspace-label .us-flag {
+      width: 1.5em;
+      height: 1em;
+      vertical-align: -0.16em;
+    }
+
     @keyframes bomber-pass {
       0% { transform: translateX(0) translateY(5px) rotate(-2deg); opacity: 0; }
       12%, 78% { opacity: 0.92; }
@@ -436,6 +442,54 @@
 
     .title-group .flag-icon {
       font-size: 1.35rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      border: 1px solid rgba(96, 165, 250, 0.6);
+      border-radius: 7px;
+      padding: 7px 10px;
+      background: rgba(30, 58, 138, 0.55);
+      color: #dbeafe;
+      font: 800 0.68rem 'JetBrains Mono', monospace;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      background: rgba(30, 64, 175, 0.7);
+      border-color: #93c5fd;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .copy-btn:focus-visible {
+      outline: 2px solid #facc15;
+      outline-offset: 2px;
+    }
+
+    .copy-btn:active {
+      transform: translateY(0);
+      background: rgba(30, 58, 138, 0.9);
+    }
+
+    .copy-btn.copied {
+      border-color: rgba(74, 222, 128, 0.8);
+      background: rgba(20, 83, 45, 0.75);
+      color: #bbf7d0;
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
     }
 
     .badge {
@@ -1146,7 +1200,7 @@
       <div class="airspace-scene" aria-hidden="true">
         <div class="flight-path"></div>
         <div class="stealth-bomber"></div>
-        <div class="airspace-label">US AIRSPACE // SECURE</div>
+        <div class="airspace-label"><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> AIRSPACE // SECURE</div>
       </div>
       <div class="header-top">
         <div class="title-group">
