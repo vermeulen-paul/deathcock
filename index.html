@@ -1444,7 +1444,7 @@
     }
 
     function startNationalAnthem() {
-      if (!soundState.enabled) return;
+      if (!soundState.enabled || codeSolved === 0) return;
       if (!nationalAnthemAudio.paused) return;
       nationalAnthemAudio.play().catch((error) => {
         console.warn('National anthem playback was blocked until page interaction:', error);
@@ -2030,6 +2030,7 @@
             codeStartBtn.disabled = false;
             codeStartBtn.textContent = 'New Code';
             codeStatusEl.textContent = 'Access granted. New code ready when you are.';
+            startNationalAnthem();
           }
         });
       });
@@ -2044,11 +2045,9 @@
 
     document.addEventListener('pointerdown', () => {
       activateAudio();
-      startNationalAnthem();
     }, { once: true });
     document.addEventListener('keydown', () => {
       activateAudio();
-      startNationalAnthem();
     }, { once: true });
     document.addEventListener('visibilitychange', () => {
       activateAudio();
