@@ -1401,9 +1401,10 @@
       enabled: localStorage.getItem('patriotFireworkMuted') !== 'true',
       audioCtx: null,
       completionSoundPlayed: false,
-      fireworkReady: false,
+      fireworkReady: true,
       lastFireworkBurstAt: 0,
-      fireworkBurstCooldownMs: 4500
+      fireworkBurstCooldownMs: 4300,
+      fireworkBurstLeadMs: 2200
     };
 
     function updateSoundToggleUI() {
@@ -1517,10 +1518,15 @@
         const triggerBurst = () => {
           if (burstLocked) return;
           burstLocked = true;
-          playFireworkSound();
+
+          setTimeout(() => {
+            activateAudio();
+            playFireworkSound();
+          }, soundState.fireworkBurstLeadMs);
+
           setTimeout(() => {
             burstLocked = false;
-          }, 4700);
+          }, soundState.fireworkBurstCooldownMs);
         };
 
         fireworkEl.addEventListener('animationstart', triggerBurst);
@@ -2022,14 +2028,14 @@
     document.addEventListener('pointerdown', activateAudio, { once: true });
     document.addEventListener('keydown', activateAudio, { once: true });
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        activateAudio();
-      }
+      activateAudio();
     });
     window.addEventListener('focus', activateAudio);
+    window.addEventListener('load', activateAudio);
 
     wireFireworkAudio();
     updateSoundToggleUI();
+    activateAudio();
 
     // Run immediately and then tick every 200ms for smooth live updates
     updateClock();
