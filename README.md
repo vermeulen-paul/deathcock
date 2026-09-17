@@ -4,7 +4,7 @@ A modern .NET console application built with Spectre.Console and a companion sta
 
 ---
 
-## Features HUE HUE
+## Features HUE HUE2
 
 - **Live Workday Countdown Clock**: The main clock ticks down the **remaining business work time** broken down into **8-hour Workdays**, **Hours**, **Minutes**, **Seconds**, and **Tenths**.
 - **Target Handling**: Automatically targets November 30 at 17:00:00 of the current year (or next year if already passed).
