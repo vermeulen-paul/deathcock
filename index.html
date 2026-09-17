@@ -1397,6 +1397,9 @@
     const WORK_DAY_END_HOUR = 17;   // 17:00 (8h work day)
     const HOURS_PER_WORK_DAY = 8.0;
     const US_FLAG_MARKUP = '<img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag">';
+    const NATIONAL_ANTHEM_URL = 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Star-spangled_Banner_opening_bars.wav';
+    const nationalAnthemAudio = new Audio(NATIONAL_ANTHEM_URL);
+    nationalAnthemAudio.preload = 'auto';
     const soundState = {
       enabled: localStorage.getItem('patriotFireworkMuted') !== 'true',
       audioCtx: null,
@@ -1436,6 +1439,15 @@
 
     function ensureAudioContext() {
       return activateAudio();
+    }
+
+    function playNationalAnthem() {
+      if (!soundState.enabled) return;
+      nationalAnthemAudio.pause();
+      nationalAnthemAudio.currentTime = 0;
+      nationalAnthemAudio.play().catch((error) => {
+        console.warn('National anthem playback was blocked:', error);
+      });
     }
 
     function playFireworkSound() {
@@ -1540,6 +1552,9 @@
       updateSoundToggleUI();
       if (soundState.enabled) {
         playFireworkSound();
+      } else {
+        nationalAnthemAudio.pause();
+        nationalAnthemAudio.currentTime = 0;
       }
     }
 
@@ -2013,6 +2028,7 @@
             codeStartBtn.disabled = false;
             codeStartBtn.textContent = 'New Code';
             codeStatusEl.textContent = 'Access granted. New code ready when you are.';
+            playNationalAnthem();
           }
         });
       });
