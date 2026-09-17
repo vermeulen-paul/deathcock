@@ -601,16 +601,16 @@
       <div class="challenge-info">
         <span style="font-size: 1.1rem;">🎯</span>
         <span class="challenge-title">PATRIOT CLICK CHALLENGE:</span>
-        <span id="challengePrompt">Kun jij 50 Patriot-kliks volbrengen voor maximale vrijheid?</span>
+        <span id="challengePrompt">Can you complete 50 Patriot clicks for maximum freedom?</span>
       </div>
       <div class="challenge-actions">
         <span class="click-rank" id="patriotRank">Rank: Recruit 🎖️</span>
         <div class="click-counter-badge">
-          <span>🦅 Kliks:</span>
+          <span>🦅 Clicks:</span>
           <span id="patriotClickCount">0</span>
         </div>
         <button class="click-btn" id="patriotClickBtn" type="button">
-          <span>🇺🇸 KLIK HIER!</span>
+          <span>🇺🇸 CLICK HERE!</span>
         </button>
       </div>
     </div>
@@ -624,9 +624,9 @@
           <span class="flag-icon">🇺🇸🦅</span>
         </div>
         <div class="header-actions">
-          <button class="copy-btn" id="copySummaryBtn" type="button" title="Kopieer actuele countdown samenvatting">
+          <button class="copy-btn" id="copySummaryBtn" type="button" title="Copy the current countdown summary">
             <span id="copyIcon">📋</span>
-            <span id="copyText">KOPIEER SUMMARY</span>
+            <span id="copyText">COPY SUMMARY</span>
           </button>
           <div id="workStatusBadge" class="badge active">
             <span class="dot"></span>
@@ -971,24 +971,24 @@
           '========================================',
           '🦅🇺🇸 PATRIOT FREEDOM COUNTDOWN SUMMARY 🇺🇸🦅',
           '========================================',
-          `⭐ RESTERENDE WERKDAGEN (8u): ${remWorkdays.toFixed(2)} WERKDAGEN ⭐`,
-          `⏱️  (${Math.floor(remWorkdays)} werkdagen, ${workHoursWithinDay}u ${workMinutes}m ${workSeconds}s)`,
+          `⭐ REMAINING WORKDAYS (8h): ${remWorkdays.toFixed(2)} WORKDAYS ⭐`,
+          `⏱️  (${Math.floor(remWorkdays)} workdays, ${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`,
           '========================================',
-          `🎯 Target Deadline: 30 november @ 17:00:00`,
-          `📅 Peildatum: ${now.toLocaleString()}`,
-          `🏢 Status: ${remBiz.isStartInWorkHours ? '● ACTIEVE WERKUREN (09:00 - 17:00)' : '○ BUITEN WERKUREN'}`,
+          `🎯 Target deadline: November 30 @ 17:00:00`,
+          `📅 Reference date: ${now.toLocaleString()}`,
+          `🏢 Status: ${remBiz.isStartInWorkHours ? '● ACTIVE WORK HOURS (09:00 - 17:00)' : '○ OFF DUTY'}`,
           '----------------------------------------',
-          `💼 8-UUR WERKDAGEN COUNTDOWN:`,
-          `   • Resterende Werkdagen (8u): ${remWorkdays.toFixed(2)} werkdagen`,
-          `   • Resterende Werkuren (09:00-17:00): ${remBizHours.toFixed(1)} uur`,
-          `   • Resterende Weekdagen: ${remBiz.businessDaysCount} dagen`,
-          `   • Resterende 40u Werkweken: ${(remBizHours / 40.0).toFixed(2)} weken`,
+          `💼 8-HOUR WORKDAY COUNTDOWN:`,
+          `   • Remaining workdays (8h): ${remWorkdays.toFixed(2)} workdays`,
+          `   • Remaining work hours (09:00-17:00): ${remBizHours.toFixed(1)} hours`,
+          `   • Remaining weekdays: ${remBiz.businessDaysCount} days`,
+          `   • Remaining 40h work weeks: ${(remBizHours / 40.0).toFixed(2)} weeks`,
           '----------------------------------------',
-          `🌐 TOTALE KALENDER COUNTDOWN (24/7):`,
-          `   • Tijd resterend: ${calDays}d ${calHours}u ${calMins}m ${calSecs}s`,
-          `   • Totale Dagen: ${totalRemDays.toFixed(2)} dagen`,
-          `   • Totale Uren: ${totalRemHours.toFixed(1)} uur`,
-          `   • Totale 8-uurs shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
+          `🌐 TOTAL CALENDAR COUNTDOWN (24/7):`,
+          `   • Time remaining: ${calDays}d ${calHours}h ${calMins}m ${calSecs}s`,
+          `   • Total days: ${totalRemDays.toFixed(2)} days`,
+          `   • Total hours: ${totalRemHours.toFixed(1)} hours`,
+          `   • Total 8-hour shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
           '========================================'
         ].join('\n');
 
@@ -1006,12 +1006,12 @@
 
           copyBtn.classList.add('copied');
           copyIcon.textContent = '✅';
-          copyText.textContent = 'GEKOPIEERD!';
+          copyText.textContent = 'COPIED!';
 
           setTimeout(() => {
             copyBtn.classList.remove('copied');
             copyIcon.textContent = '📋';
-            copyText.textContent = 'KOPIEER SUMMARY';
+            copyText.textContent = 'COPY SUMMARY';
           }, 2000);
         } catch (err) {
           console.error('Clipboard copy failed:', err);
@@ -1041,11 +1041,11 @@
         clickRankEl.textContent = getPatriotRank(patriotClicks);
 
         if (patriotClicks === 50) {
-          challengePromptEl.textContent = '🏆 50 KLIKS BEREIKT! Supercharged Freedom geactiveerd! 🦅🇺🇸';
+          challengePromptEl.textContent = '🏆 50 CLICKS REACHED! Supercharged freedom activated! 🦅🇺🇸';
           challengePromptEl.style.color = '#4ade80';
           challengePromptEl.style.fontWeight = '800';
         } else if (patriotClicks > 50) {
-          challengePromptEl.textContent = `⚡ Maximale Patriot Power: ${patriotClicks} kliks! 🦅`;
+          challengePromptEl.textContent = `⚡ Maximum Patriot power: ${patriotClicks} clicks! 🦅`;
         }
 
         // Floating +1 Eagle effect
