@@ -131,7 +131,7 @@ public class Program
 
         string workStatusBadge = metrics.IsCurrentlyWorkHours
             ? "[bold white on red] 🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸 [/]"
-            : "[bold grey on grey23] 🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸 [/]";
+            : "[bold gray on gray23] 🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸 [/]";
 
         headerTable.AddRow(
             new Markup("[bold red]🦅🇺🇸 PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER 🇺🇸🦅[/]"),
