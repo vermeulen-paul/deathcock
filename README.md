@@ -1,6 +1,6 @@
 # Countdown Clock & 8-Hour Workday Tracker
 
-A modern .NET console application built with Spectre.Console and a companion static web app that render a live ticking countdown clock down to **November 30, 17:00** with precision metrics for both total calendar countdown and 8-hour workday countdown.
+A modern .NET console application built with Spectre.Console and a companion static web app that renders a live ticking countdown clock down to **November 30, 17:00** with precise metrics for both total calendar countdown and 8-hour workday countdown.
 
 ---
 

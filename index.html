@@ -1127,12 +1127,12 @@
       <div class="challenge-info">
         <span style="font-size: 1.1rem;">🎯</span>
         <span class="challenge-title">PATRIOT CLICK CHALLENGE:</span>
-        <span id="challengePrompt">Kun jij 50 Patriot-kliks volbrengen voor maximale vrijheid?</span>
+        <span id="challengePrompt">Can you complete 50 Patriot clicks for maximum freedom?</span>
       </div>
       <div class="challenge-actions">
         <span class="click-rank" id="patriotRank">Rank: Recruit 🎖️</span>
         <div class="click-counter-badge">
-          <span>🦅 Kliks:</span>
+          <span>🦅 Clicks:</span>
           <span id="patriotClickCount">0</span>
         </div>
         <button class="click-btn" id="patriotClickBtn" type="button">
@@ -1154,9 +1154,15 @@
           <h1>PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER</h1>
           <span class="flag-icon"><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> 🦅</span>
         </div>
-        <div id="workStatusBadge" class="badge active">
-          <span class="dot"></span>
-          <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
+        <div class="header-actions">
+          <button class="copy-btn" id="copySummaryBtn" type="button" title="Copy the current countdown summary">
+            <span id="copyIcon">📋</span>
+            <span id="copyText">COPY SUMMARY</span>
+          </button>
+          <div id="workStatusBadge" class="badge active">
+            <span class="dot"></span>
+            <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
+          </div>
         </div>
       </div>
       <div class="header-details">
@@ -1505,6 +1511,85 @@
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
     }
 
+    // Clipboard Copy Summary Logic
+    const copyBtn = document.getElementById('copySummaryBtn');
+    const copyIcon = document.getElementById('copyIcon');
+    const copyText = document.getElementById('copyText');
+
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        const now = new Date();
+        const target = getUpcomingTarget(now);
+        const remBiz = calculateBusinessDuration(now, target);
+
+        const totalRemMs = Math.max(0, target - now);
+        const totalRemSec = totalRemMs / 1000;
+        const totalRemDays = totalRemSec / 86400;
+        const totalRemHours = totalRemSec / 3600;
+
+        const calDays = Math.floor(totalRemMs / (1000 * 60 * 60 * 24));
+        const calHours = Math.floor((totalRemMs / (1000 * 60 * 60)) % 24);
+        const calMins = Math.floor((totalRemMs / (1000 * 60)) % 60);
+        const calSecs = Math.floor((totalRemMs / 1000) % 60);
+
+        const remBizHours = remBiz.businessSeconds / 3600;
+        const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
+        const workHoursWithinDay = Math.floor(remBizHours % HOURS_PER_WORK_DAY);
+        const workMinutes = Math.floor((remBiz.businessSeconds % 3600) / 60);
+        const workSeconds = Math.floor(remBiz.businessSeconds % 60);
+
+        const summaryString = [
+          '========================================',
+          '🦅🇺🇸 PATRIOT FREEDOM COUNTDOWN SUMMARY 🇺🇸🦅',
+          '========================================',
+          `⭐ REMAINING WORKDAYS (8h): ${remWorkdays.toFixed(2)} WORKDAYS ⭐`,
+          `⏱️  (${Math.floor(remWorkdays)} workdays, ${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`,
+          '========================================',
+          `🎯 Target deadline: November 30 @ 17:00:00`,
+          `📅 Reference date: ${now.toLocaleString()}`,
+          `🏢 Status: ${remBiz.isStartInWorkHours ? '● ACTIVE WORK HOURS (09:00 - 17:00)' : '○ OFF DUTY'}`,
+          '----------------------------------------',
+          `💼 8-HOUR WORKDAY COUNTDOWN:`,
+          `   • Remaining workdays (8h): ${remWorkdays.toFixed(2)} workdays`,
+          `   • Remaining work hours (09:00-17:00): ${remBizHours.toFixed(1)} hours`,
+          `   • Remaining weekdays: ${remBiz.businessDaysCount} days`,
+          `   • Remaining 40h work weeks: ${(remBizHours / 40.0).toFixed(2)} weeks`,
+          '----------------------------------------',
+          `🌐 TOTAL CALENDAR COUNTDOWN (24/7):`,
+          `   • Time remaining: ${calDays}d ${calHours}h ${calMins}m ${calSecs}s`,
+          `   • Total days: ${totalRemDays.toFixed(2)} days`,
+          `   • Total hours: ${totalRemHours.toFixed(1)} hours`,
+          `   • Total 8-hour shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
+          '========================================'
+        ].join('\n');
+
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(summaryString);
+          } else {
+            const tempTa = document.createElement('textarea');
+            tempTa.value = summaryString;
+            document.body.appendChild(tempTa);
+            tempTa.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTa);
+          }
+
+          copyBtn.classList.add('copied');
+          copyIcon.textContent = '✅';
+          copyText.textContent = 'COPIED!';
+
+          setTimeout(() => {
+            copyBtn.classList.remove('copied');
+            copyIcon.textContent = '📋';
+            copyText.textContent = 'COPY SUMMARY';
+          }, 2000);
+        } catch (err) {
+          console.error('Clipboard copy failed:', err);
+        }
+      });
+    }
+
     // Patriot Click Challenge Gimmick Logic
     let patriotClicks = 0;
     const clickBtn = document.getElementById('patriotClickBtn');
@@ -1527,11 +1612,11 @@
           clickRankEl.innerHTML = getPatriotRank(patriotClicks);
 
         if (patriotClicks === 50) {
-          challengePromptEl.innerHTML = `🏆 50 KLIKS BEREIKT! Supercharged Freedom geactiveerd! 🦅${US_FLAG_MARKUP}`;
+          challengePromptEl.textContent = '🏆 50 CLICKS REACHED! Supercharged freedom activated! 🦅🇺🇸';
           challengePromptEl.style.color = '#4ade80';
           challengePromptEl.style.fontWeight = '800';
         } else if (patriotClicks > 50) {
-          challengePromptEl.textContent = `⚡ Maximale Patriot Power: ${patriotClicks} kliks! 🦅`;
+          challengePromptEl.textContent = `⚡ Maximum Patriot power: ${patriotClicks} clicks! 🦅`;
         }
 
         // Floating +1 Eagle effect
