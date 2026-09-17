@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🦅🇺🇸 Freedom Countdown Clock & 8h Workday Tracker 🇺🇸🦅</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦅</text></svg>">
+  <title>🦅 USA Freedom Countdown Clock & 8h Workday Tracker USA 🦅</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,12 +50,122 @@
         radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
     }
 
+    .page-celebration {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eagle {
+      position: absolute;
+      left: -5rem;
+      width: clamp(2.4rem, 4vw, 4rem);
+      line-height: 1;
+      filter: drop-shadow(0 0 8px rgba(248, 250, 252, 0.55));
+      opacity: 0;
+      animation: eagle-flight 15s linear infinite;
+    }
+
+    .eagle-image {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .eagle.one { top: 13%; animation-delay: -2s; }
+    .eagle.two { top: 56%; width: clamp(2rem, 3.2vw, 3.3rem); animation-delay: -8s; animation-duration: 19s; }
+    .eagle.three { top: 83%; width: clamp(1.8rem, 2.8vw, 2.8rem); animation-delay: -12s; animation-duration: 17s; }
+
+    @keyframes eagle-flight {
+      0% { transform: translateX(0) translateY(18px) rotate(-4deg); opacity: 0; }
+      8%, 82% { opacity: 0.52; }
+      50% { transform: translateX(52vw) translateY(-24px) rotate(3deg); }
+      100% { transform: translateX(calc(100vw + 10rem)) translateY(10px) rotate(-2deg); opacity: 0; }
+    }
+
+    .firework {
+      --firework-color: #facc15;
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: 4px;
+      height: 4px;
+      color: var(--firework-color);
+      animation: firework-burst 4.8s ease-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .firework.red { --firework-color: #f87171; }
+    .firework.blue { --firework-color: #60a5fa; }
+    .firework.white { --firework-color: #f8fafc; }
+
+    .firework-image {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 0 8px var(--firework-color));
+    }
+
+    .spark {
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 2px;
+      height: 42px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, transparent, currentColor 45%, transparent);
+      transform-origin: 50% 1px;
+      filter: drop-shadow(0 0 4px currentColor);
+    }
+
+    .spark:nth-child(1) { transform: rotate(0deg); }
+    .spark:nth-child(2) { transform: rotate(45deg); }
+    .spark:nth-child(3) { transform: rotate(90deg); }
+    .spark:nth-child(4) { transform: rotate(135deg); }
+    .spark:nth-child(5) { transform: rotate(180deg); }
+    .spark:nth-child(6) { transform: rotate(225deg); }
+    .spark:nth-child(7) { transform: rotate(270deg); }
+    .spark:nth-child(8) { transform: rotate(315deg); }
+
+    @keyframes firework-burst {
+      0%, 42% { opacity: 0; transform: scale(0.1); }
+      48% { opacity: 0.95; transform: scale(0.65); }
+      64% { opacity: 0.7; transform: scale(1.05); }
+      82%, 100% { opacity: 0; transform: scale(1.35); }
+    }
+
     .container {
       width: 100%;
       max-width: 940px;
       display: flex;
       flex-direction: column;
       gap: 20px;
+    }
+
+    .us-flag {
+      display: inline-block;
+      width: 1.15em;
+      height: 0.76em;
+      object-fit: cover;
+      vertical-align: -0.04em;
+      border-radius: 1px;
+      box-shadow: 0 0 5px rgba(248, 250, 252, 0.35);
+    }
+
+    .flag-icon .us-flag {
+      width: 1.35em;
+      height: 0.9em;
     }
 
     /* Patriotic Header Banner & Click Challenge Bar */
@@ -168,6 +277,139 @@
       gap: 12px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
       position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated patriotic airspace */
+    .airspace-scene {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .airspace-scene::before,
+    .airspace-scene::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #ffffff;
+      box-shadow: 42px 19px #ffffff, 116px 9px #60a5fa, 198px 28px #ffffff,
+        286px 14px #f87171, 382px 35px #ffffff, 492px 12px #93c5fd,
+        602px 26px #ffffff, 708px 8px #fca5a5, 816px 31px #ffffff;
+      animation: stars-drift 7s linear infinite;
+    }
+
+    .airspace-scene::before { top: 16px; left: 8px; }
+    .airspace-scene::after {
+      top: 46px;
+      left: 72px;
+      opacity: 0.55;
+      animation-delay: -3.5s;
+      transform: scale(0.7);
+    }
+
+    .flight-path {
+      position: absolute;
+      top: 27px;
+      left: -18%;
+      width: 140%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.7), transparent);
+      transform: rotate(-4deg);
+      animation: path-scan 6s ease-in-out infinite;
+    }
+
+    .flight-path::before,
+    .flight-path::after {
+      content: '';
+      position: absolute;
+      height: 2px;
+      width: 22%;
+      right: 34%;
+      border-radius: 999px;
+      filter: blur(1px);
+    }
+
+    .flight-path::before {
+      top: -4px;
+      background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.85));
+    }
+
+    .flight-path::after {
+      top: 4px;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.85));
+    }
+
+    .stealth-bomber {
+      position: absolute;
+      top: 11px;
+      left: -120px;
+      width: 86px;
+      height: 26px;
+      background: linear-gradient(170deg, #e2e8f0 0 12%, #64748b 13% 48%, #1e293b 49% 100%);
+      clip-path: polygon(0 54%, 25% 43%, 42% 0, 53% 40%, 100% 50%, 59% 61%, 45% 100%, 38% 64%);
+      filter: drop-shadow(0 0 6px rgba(226, 232, 240, 0.55));
+      animation: bomber-pass 6s cubic-bezier(0.2, 0.1, 0.7, 1) infinite;
+    }
+
+    .stealth-bomber::after {
+      content: '✦';
+      position: absolute;
+      top: 3px;
+      left: 40px;
+      color: #ffffff;
+      font-size: 0.55rem;
+      opacity: 0.85;
+    }
+
+    .airspace-label {
+      position: absolute;
+      right: 18px;
+      top: 10px;
+      color: rgba(147, 197, 253, 0.55);
+      font: 600 0.58rem 'JetBrains Mono', monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: label-flicker 4s ease-in-out infinite;
+    }
+
+    @keyframes bomber-pass {
+      0% { transform: translateX(0) translateY(5px) rotate(-2deg); opacity: 0; }
+      12%, 78% { opacity: 0.92; }
+      100% { transform: translateX(calc(100vw + 260px)) translateY(-11px) rotate(-2deg); opacity: 0; }
+    }
+
+    @keyframes path-scan {
+      0%, 100% { opacity: 0.15; transform: translateX(-8%) rotate(-4deg); }
+      45%, 60% { opacity: 0.75; transform: translateX(4%) rotate(-4deg); }
+    }
+
+    @keyframes stars-drift {
+      0%, 100% { opacity: 0.35; transform: translateY(0); }
+      50% { opacity: 0.9; transform: translateY(5px); }
+    }
+
+    @keyframes label-flicker {
+      0%, 100% { opacity: 0.35; }
+      45% { opacity: 0.7; }
+      48% { opacity: 0.2; }
+      51% { opacity: 0.7; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .eagle,
+      .firework,
+      .airspace-scene *,
+      .airspace-scene::before,
+      .airspace-scene::after,
+      .clock-card::after,
+      .clock-card .clock-tag::before,
+      .metric-card::after {
+        animation: none !important;
+      }
     }
 
     .header-top {
@@ -222,49 +464,6 @@
       border: 1px solid rgba(100, 116, 139, 0.3);
     }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .copy-btn {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      padding: 6px 14px;
-      border-radius: 9999px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-      user-select: none;
-    }
-
-    .copy-btn:hover {
-      background: linear-gradient(135deg, #0369a1, #0284c7);
-      color: #ffffff;
-      border-color: #38bdf8;
-      transform: translateY(-1px);
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
-    }
-
-    .copy-btn:active {
-      transform: scale(0.96);
-    }
-
-    .copy-btn.copied {
-      background: linear-gradient(135deg, #065f46, #047857);
-      color: #34d399;
-      border-color: #10b981;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
-    }
-
     .badge .dot {
       width: 8px;
       height: 8px;
@@ -315,6 +514,40 @@
       box-shadow: 0 0 35px var(--accent-blue-glow), 0 10px 30px rgba(0, 0, 0, 0.7);
       position: relative;
       overflow: hidden;
+      isolation: isolate;
+    }
+
+    .clock-card::after {
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(96, 165, 250, 0.12);
+      border-radius: 14px;
+      pointer-events: none;
+      animation: console-pulse 3.8s ease-in-out infinite;
+    }
+
+    .clock-card .clock-tag,
+    .clock-card .clock-digits-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .clock-card .clock-tag::before {
+      content: '◉';
+      color: #ef4444;
+      font-size: 0.7rem;
+      animation: beacon-blink 1.6s steps(2, end) infinite;
+    }
+
+    @keyframes console-pulse {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.008); }
+    }
+
+    @keyframes beacon-blink {
+      0%, 35% { opacity: 1; text-shadow: 0 0 8px #ef4444; }
+      36%, 100% { opacity: 0.35; text-shadow: none; }
     }
 
     .clock-card::before {
@@ -485,6 +718,64 @@
       border-radius: 16px;
       padding: 20px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: '';
+      position: absolute;
+      right: -28px;
+      bottom: -34px;
+      width: 120px;
+      height: 120px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      opacity: 0.12;
+      pointer-events: none;
+      animation: orbit-ring 7s linear infinite;
+    }
+
+    .metric-card.red::after {
+      color: var(--accent-red);
+      box-shadow: 0 0 0 12px rgba(239, 68, 68, 0.08), 0 0 0 25px rgba(239, 68, 68, 0.05);
+    }
+
+    .metric-card.blue::after {
+      color: var(--accent-blue);
+      box-shadow: 0 0 0 12px rgba(59, 130, 246, 0.08), 0 0 0 25px rgba(59, 130, 246, 0.05);
+      animation-direction: reverse;
+    }
+
+    .metric-card::before {
+      position: absolute;
+      top: 9px;
+      right: 14px;
+      font: 700 0.56rem 'JetBrains Mono', monospace;
+      letter-spacing: 0.14em;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .metric-card.red::before {
+      content: 'LIBERTY // 01';
+      color: #fca5a5;
+    }
+
+    .metric-card.blue::before {
+      content: 'COMMAND // 02';
+      color: #93c5fd;
+    }
+
+    .metric-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes orbit-ring {
+      from { transform: rotate(0deg) scale(0.94); }
+      50% { transform: rotate(180deg) scale(1.04); }
+      to { transform: rotate(360deg) scale(0.94); }
     }
 
     .metric-card.red {
@@ -535,6 +826,214 @@
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
       color: var(--text-primary);
+    }
+
+    .minigames-panel {
+      background: rgba(8, 15, 32, 0.92);
+      border: 1px solid rgba(248, 250, 252, 0.14);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .minigames-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .minigames-heading h2 {
+      color: #facc15;
+      font: 800 0.95rem 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .minigames-heading span {
+      color: var(--text-muted);
+      font: 600 0.65rem 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .minigames-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .minigame-card {
+      background: #0f1b32;
+      border: 1px solid rgba(96, 165, 250, 0.25);
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .minigame-card h3 {
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .minigame-status {
+      min-height: 32px;
+      color: var(--text-secondary);
+      font: 0.72rem/1.45 'JetBrains Mono', monospace;
+    }
+
+    .minigame-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .minigame-btn {
+      border: 1px solid rgba(250, 204, 21, 0.6);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #422006;
+      color: #fef3c7;
+      cursor: pointer;
+      font: 800 0.72rem 'JetBrains Mono', monospace;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
+
+    .minigame-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.3);
+    }
+
+    .minigame-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .minigame-score {
+      color: #67e8f9;
+      font: 800 0.75rem 'JetBrains Mono', monospace;
+    }
+
+    .eagle-arena {
+      position: relative;
+      height: 92px;
+      margin-top: 10px;
+      overflow: hidden;
+      border: 1px dashed rgba(96, 165, 250, 0.35);
+      border-radius: 8px;
+      background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.16), transparent 65%), #071124;
+    }
+
+    .eagle-target {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      padding: 4px;
+      border: 1px solid rgba(248, 250, 252, 0.65);
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.9);
+      cursor: crosshair;
+      transform: translate(-50%, -50%);
+      animation: target-pulse 0.85s ease-in-out infinite alternate;
+    }
+
+    .eagle-target img {
+      width: 100%;
+      height: 100%;
+    }
+
+    @keyframes target-pulse {
+      from { box-shadow: 0 0 4px rgba(248, 250, 252, 0.35); }
+      to { box-shadow: 0 0 14px rgba(248, 250, 252, 0.75); }
+    }
+
+    .code-sequence {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      margin-top: 22px;
+    }
+
+    .code-light {
+      width: 12px;
+      height: 12px;
+      border: 1px solid rgba(248, 250, 252, 0.35);
+      border-radius: 50%;
+      background: #1e293b;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .code-light.complete {
+      background: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.75);
+    }
+
+    .code-light.red {
+      background: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+    }
+
+    .code-light.white {
+      background: #f8fafc;
+      box-shadow: 0 0 10px rgba(248, 250, 252, 0.8);
+    }
+
+    .code-light.blue {
+      background: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+    }
+
+    .code-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .code-key {
+      min-height: 34px;
+      border: 1px solid currentColor;
+      border-radius: 7px;
+      cursor: pointer;
+      font: 800 0.7rem 'JetBrains Mono', monospace;
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+
+    .code-key:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.25);
+    }
+
+    .code-key:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .code-key.red {
+      color: #fca5a5;
+      background: rgba(127, 29, 29, 0.7);
+    }
+
+    .code-key.white {
+      color: #f8fafc;
+      background: rgba(71, 85, 105, 0.7);
+    }
+
+    .code-key.blue {
+      color: #93c5fd;
+      background: rgba(30, 58, 138, 0.7);
+    }
+
+    @media (max-width: 768px) {
+      .minigames-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .metric-row.highlight .name {
@@ -593,6 +1092,33 @@
   </style>
 </head>
 <body>
+  <div class="page-celebration" aria-hidden="true">
+    <span class="eagle one"><img class="eagle-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f985.svg" alt=""></span>
+    <span class="eagle two"><img class="eagle-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f985.svg" alt=""></span>
+    <span class="eagle three"><img class="eagle-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f985.svg" alt=""></span>
+
+    <div class="firework red" style="--x: 13%; --y: 17%; --delay: -1.4s;">
+      <img class="firework-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f386.svg" alt="">
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+    </div>
+    <div class="firework blue" style="--x: 86%; --y: 22%; --delay: -3.1s;">
+      <img class="firework-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f386.svg" alt="">
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+    </div>
+    <div class="firework white" style="--x: 8%; --y: 72%; --delay: -4.2s;">
+      <img class="firework-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f386.svg" alt="">
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+    </div>
+    <div class="firework red" style="--x: 92%; --y: 78%; --delay: -2.3s;">
+      <img class="firework-image" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f386.svg" alt="">
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+      <i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i>
+    </div>
+
+  </div>
   <div class="container">
     <div class="patriot-flag-bar"></div>
 
@@ -610,28 +1136,27 @@
           <span id="patriotClickCount">0</span>
         </div>
         <button class="click-btn" id="patriotClickBtn" type="button">
-          <span>🇺🇸 KLIK HIER!</span>
+          <span><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> KLIK HIER!</span>
         </button>
       </div>
     </div>
 
     <!-- Header -->
     <header class="header-card">
+      <div class="airspace-scene" aria-hidden="true">
+        <div class="flight-path"></div>
+        <div class="stealth-bomber"></div>
+        <div class="airspace-label">US AIRSPACE // SECURE</div>
+      </div>
       <div class="header-top">
         <div class="title-group">
-          <span class="flag-icon">🦅🇺🇸</span>
+          <span class="flag-icon">🦅 <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
           <h1>PATRIOT FREEDOM CLOCK & 8H WORKDAY TRACKER</h1>
-          <span class="flag-icon">🇺🇸🦅</span>
+          <span class="flag-icon"><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> 🦅</span>
         </div>
-        <div class="header-actions">
-          <button class="copy-btn" id="copySummaryBtn" type="button" title="Kopieer actuele countdown samenvatting">
-            <span id="copyIcon">📋</span>
-            <span id="copyText">KOPIEER SUMMARY</span>
-          </button>
-          <div id="workStatusBadge" class="badge active">
-            <span class="dot"></span>
-            <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸</span>
-          </div>
+        <div id="workStatusBadge" class="badge active">
+          <span class="dot"></span>
+          <span id="workStatusText">🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
         </div>
       </div>
       <div class="header-details">
@@ -641,18 +1166,18 @@
         </div>
         <div class="detail-item right">
           <span class="label">Freedom Target: </span>
-          <span class="val" id="targetDateDisplay" style="color: var(--accent-yellow);">🇺🇸 Nov 30, 17:00:00 🦅</span>
+          <span class="val" id="targetDateDisplay" style="color: var(--accent-yellow);"><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> Nov 30, 17:00:00 🦅</span>
         </div>
       </div>
     </header>
 
     <!-- Main Live Clock Display (Work Time Remaining) -->
     <section class="clock-card">
-      <div class="clock-tag">🦅 REMAINING PATRIOT WORK TIME (8H WORKDAYS) 🇺🇸</div>
+      <div class="clock-tag">🦅 REMAINING PATRIOT WORK TIME (8H WORKDAYS) <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></div>
       <div class="clock-digits-container" id="clockDigitsContainer">
         <div class="digit-box accent">
           <div class="digit-val" id="workdaysVal"></div>
-          <div class="digit-lbl">🇺🇸 WORKDAYS (8h) 🦅</div>
+          <div class="digit-lbl"><img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"> WORKDAYS (8h) 🦅</div>
         </div>
         <span class="colon-separator">:</span>
         <div class="digit-box">
@@ -676,7 +1201,7 @@
     <div class="metrics-grid">
       <!-- Total Calendar Countdown -->
       <div class="metric-card red">
-        <div class="card-heading">🗽 Total Calendar Countdown 🇺🇸</div>
+        <div class="card-heading">🗽 Total Calendar Countdown <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></div>
         <div class="metric-rows">
           <div class="metric-row highlight">
             <span class="name">Total Time Remaining</span>
@@ -696,14 +1221,14 @@
           </div>
           <div class="metric-row">
             <span class="name">Total Seconds of Valor</span>
-            <span class="val" id="calTotalSecs">-- sec 🇺🇸</span>
+            <span class="val" id="calTotalSecs">-- sec <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
           </div>
         </div>
       </div>
 
       <!-- 8-Hour Workday Countdown -->
       <div class="metric-card blue">
-        <div class="card-heading">🦅 8-Hour Workday Countdown 🇺🇸</div>
+        <div class="card-heading">🦅 8-Hour Workday Countdown <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></div>
         <div class="metric-rows">
           <div class="metric-row highlight-green">
             <span class="name">Workdays of Grit Remaining</span>
@@ -715,7 +1240,7 @@
           </div>
           <div class="metric-row">
             <span class="name">Patriot Weekdays Left</span>
-            <span class="val" id="workBusinessDaysCount">-- days 🇺🇸</span>
+            <span class="val" id="workBusinessDaysCount">-- days <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
           </div>
           <div class="metric-row">
             <span class="name">Standard 40h Work Weeks Left</span>
@@ -729,9 +1254,48 @@
       </div>
     </div>
 
+    <section class="minigames-panel" aria-labelledby="minigamesTitle">
+      <div class="minigames-heading">
+        <h2 id="minigamesTitle">Patriot Arcade</h2>
+        <span>Optional side missions</span>
+      </div>
+      <div class="minigames-grid">
+        <article class="minigame-card">
+          <h3>Eagle Intercept</h3>
+          <p class="minigame-status" id="eagleGameStatus">Start a 10-second sortie and tag as many eagles as possible.</p>
+          <div class="eagle-arena" id="eagleArena">
+            <button class="eagle-target" id="eagleTarget" type="button" hidden aria-label="Tag the eagle">
+              <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f985.svg" alt="">
+            </button>
+          </div>
+          <div class="minigame-controls">
+            <button class="minigame-btn" id="eagleStartBtn" type="button">Start Sortie</button>
+            <span class="minigame-score" id="eagleScore">Score: 0</span>
+          </div>
+        </article>
+
+        <article class="minigame-card">
+          <h3>Patriot Codebreaker</h3>
+          <p class="minigame-status" id="codeGameStatus">Memorize the three-color signal, then enter it in order.</p>
+          <div class="code-sequence" id="codeSequence" aria-label="Secret color sequence">
+            <span class="code-light"></span><span class="code-light"></span><span class="code-light"></span>
+          </div>
+          <div class="code-pad" aria-label="Color code keypad">
+            <button class="code-key red" data-code="red" type="button">RED</button>
+            <button class="code-key white" data-code="white" type="button">WHITE</button>
+            <button class="code-key blue" data-code="blue" type="button">BLUE</button>
+          </div>
+          <div class="minigame-controls">
+            <button class="minigame-btn" id="codeStartBtn" type="button">New Code</button>
+            <span class="minigame-score" id="codeScore">Solved: 0</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <!-- Footer -->
     <div class="footer">
-      <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision live countdown 🇺🇸</span>
+      <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision live countdown <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
     </div>
   </div>
 
@@ -739,6 +1303,7 @@
     const WORK_DAY_START_HOUR = 9;  // 09:00
     const WORK_DAY_END_HOUR = 17;   // 17:00 (8h work day)
     const HOURS_PER_WORK_DAY = 8.0;
+    const US_FLAG_MARKUP = '<img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag">';
 
     function getUpcomingTarget(now) {
       const thisYearTarget = new Date(now.getFullYear(), 10, 30, 17, 0, 0, 0); // Month is 0-indexed: 10 = November
@@ -907,16 +1472,16 @@
       document.getElementById('currentDateDisplay').textContent = nowStr;
 
       const targetDayStr = daysOfWeek[target.getDay()];
-      document.getElementById('targetDateDisplay').textContent = `🇺🇸 November 30, ${target.getFullYear()} @ 17:00:00 (${targetDayStr}) 🦅`;
+      document.getElementById('targetDateDisplay').innerHTML = `${US_FLAG_MARKUP} November 30, ${target.getFullYear()} @ 17:00:00 (${targetDayStr}) 🦅`;
 
       const badge = document.getElementById('workStatusBadge');
       const badgeText = document.getElementById('workStatusText');
       if (remBiz.isStartInWorkHours) {
         badge.className = 'badge active';
-        badgeText.textContent = '🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) 🇺🇸';
+        badgeText.innerHTML = `🦅 ON THE CLOCK: PATRIOT WORK HOURS (09:00 - 17:00) ${US_FLAG_MARKUP}`;
       } else {
         badge.className = 'badge inactive';
-        badgeText.textContent = '🦅 OFF DUTY / FREEDOM REST HOURS 🇺🇸';
+        badgeText.innerHTML = `🦅 OFF DUTY / FREEDOM REST HOURS ${US_FLAG_MARKUP}`;
       }
 
       // Main Rolling Digit Clock
@@ -930,93 +1495,14 @@
       document.getElementById('calTotalDays').textContent = `${formatNumber(totalRemDays, 2)} days 🦅`;
       document.getElementById('calTotalHours').textContent = `${formatNumber(totalRemHours, 1)} hrs`;
       document.getElementById('calTotalMins').textContent = `${formatNumber(totalRemMins, 0)} min`;
-      document.getElementById('calTotalSecs').textContent = `${formatNumber(totalRemSec, 0)} sec 🇺🇸`;
+      document.getElementById('calTotalSecs').innerHTML = `${formatNumber(totalRemSec, 0)} sec ${US_FLAG_MARKUP}`;
 
       // Right Card: 8-Hour Workday Countdown
       document.getElementById('workWorkdaysRemaining').textContent = `${formatNumber(remWorkdays, 2)} workdays 🦅`;
       document.getElementById('workBusinessHoursLeft').textContent = `${formatNumber(remBizHours, 1)} hrs (${workHoursWithinDay}h ${workMinutes}m ${workSeconds}s)`;
-      document.getElementById('workBusinessDaysCount').textContent = `${remBiz.businessDaysCount} days 🇺🇸`;
+      document.getElementById('workBusinessDaysCount').innerHTML = `${remBiz.businessDaysCount} days ${US_FLAG_MARKUP}`;
       document.getElementById('workWorkWeeksLeft').textContent = `${formatNumber(remWorkWeeks, 2)} weeks`;
       document.getElementById('workRawShifts').textContent = `${formatNumber(totalRemHours / HOURS_PER_WORK_DAY, 2)} shifts (8h)`;
-    }
-
-    // Clipboard Copy Summary Logic
-    const copyBtn = document.getElementById('copySummaryBtn');
-    const copyIcon = document.getElementById('copyIcon');
-    const copyText = document.getElementById('copyText');
-
-    if (copyBtn) {
-      copyBtn.addEventListener('click', async () => {
-        const now = new Date();
-        const target = getUpcomingTarget(now);
-        const remBiz = calculateBusinessDuration(now, target);
-
-        const totalRemMs = Math.max(0, target - now);
-        const totalRemSec = totalRemMs / 1000;
-        const totalRemDays = totalRemSec / 86400;
-        const totalRemHours = totalRemSec / 3600;
-
-        const calDays = Math.floor(totalRemMs / (1000 * 60 * 60 * 24));
-        const calHours = Math.floor((totalRemMs / (1000 * 60 * 60)) % 24);
-        const calMins = Math.floor((totalRemMs / (1000 * 60)) % 60);
-        const calSecs = Math.floor((totalRemMs / 1000) % 60);
-
-        const remBizHours = remBiz.businessSeconds / 3600;
-        const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
-        const workHoursWithinDay = Math.floor(remBizHours % HOURS_PER_WORK_DAY);
-        const workMinutes = Math.floor((remBiz.businessSeconds % 3600) / 60);
-        const workSeconds = Math.floor(remBiz.businessSeconds % 60);
-
-        const summaryString = [
-          '========================================',
-          '🦅🇺🇸 PATRIOT FREEDOM COUNTDOWN SUMMARY 🇺🇸🦅',
-          '========================================',
-          `⭐ RESTERENDE WERKDAGEN (8u): ${remWorkdays.toFixed(2)} WERKDAGEN ⭐`,
-          `⏱️  (${Math.floor(remWorkdays)} werkdagen, ${workHoursWithinDay}u ${workMinutes}m ${workSeconds}s)`,
-          '========================================',
-          `🎯 Target Deadline: 30 november @ 17:00:00`,
-          `📅 Peildatum: ${now.toLocaleString()}`,
-          `🏢 Status: ${remBiz.isStartInWorkHours ? '● ACTIEVE WERKUREN (09:00 - 17:00)' : '○ BUITEN WERKUREN'}`,
-          '----------------------------------------',
-          `💼 8-UUR WERKDAGEN COUNTDOWN:`,
-          `   • Resterende Werkdagen (8u): ${remWorkdays.toFixed(2)} werkdagen`,
-          `   • Resterende Werkuren (09:00-17:00): ${remBizHours.toFixed(1)} uur`,
-          `   • Resterende Weekdagen: ${remBiz.businessDaysCount} dagen`,
-          `   • Resterende 40u Werkweken: ${(remBizHours / 40.0).toFixed(2)} weken`,
-          '----------------------------------------',
-          `🌐 TOTALE KALENDER COUNTDOWN (24/7):`,
-          `   • Tijd resterend: ${calDays}d ${calHours}u ${calMins}m ${calSecs}s`,
-          `   • Totale Dagen: ${totalRemDays.toFixed(2)} dagen`,
-          `   • Totale Uren: ${totalRemHours.toFixed(1)} uur`,
-          `   • Totale 8-uurs shifts (24/7): ${(totalRemHours / 8.0).toFixed(2)} shifts`,
-          '========================================'
-        ].join('\n');
-
-        try {
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            await navigator.clipboard.writeText(summaryString);
-          } else {
-            const tempTa = document.createElement('textarea');
-            tempTa.value = summaryString;
-            document.body.appendChild(tempTa);
-            tempTa.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTa);
-          }
-
-          copyBtn.classList.add('copied');
-          copyIcon.textContent = '✅';
-          copyText.textContent = 'GEKOPIEERD!';
-
-          setTimeout(() => {
-            copyBtn.classList.remove('copied');
-            copyIcon.textContent = '📋';
-            copyText.textContent = 'KOPIEER SUMMARY';
-          }, 2000);
-        } catch (err) {
-          console.error('Clipboard copy failed:', err);
-        }
-      });
     }
 
     // Patriot Click Challenge Gimmick Logic
@@ -1027,7 +1513,7 @@
     const challengePromptEl = document.getElementById('challengePrompt');
 
     function getPatriotRank(count) {
-      if (count >= 100) return 'Rank: Legend of Liberty 🌟🇺🇸';
+      if (count >= 100) return `Rank: Legend of Liberty 🌟${US_FLAG_MARKUP}`;
       if (count >= 50) return 'Rank: Patriot Commander ⭐';
       if (count >= 25) return 'Rank: Eagle Major 🦅';
       if (count >= 10) return 'Rank: Freedom Fighter 🗽';
@@ -1038,10 +1524,10 @@
       clickBtn.addEventListener('click', (e) => {
         patriotClicks++;
         clickCountEl.textContent = patriotClicks;
-        clickRankEl.textContent = getPatriotRank(patriotClicks);
+          clickRankEl.innerHTML = getPatriotRank(patriotClicks);
 
         if (patriotClicks === 50) {
-          challengePromptEl.textContent = '🏆 50 KLIKS BEREIKT! Supercharged Freedom geactiveerd! 🦅🇺🇸';
+          challengePromptEl.innerHTML = `🏆 50 KLIKS BEREIKT! Supercharged Freedom geactiveerd! 🦅${US_FLAG_MARKUP}`;
           challengePromptEl.style.color = '#4ade80';
           challengePromptEl.style.fontWeight = '800';
         } else if (patriotClicks > 50) {
@@ -1075,6 +1561,131 @@
             document.body.removeChild(floater);
           }
         }, 700);
+      });
+    }
+
+    const eagleStartBtn = document.getElementById('eagleStartBtn');
+    const eagleTarget = document.getElementById('eagleTarget');
+    const eagleArena = document.getElementById('eagleArena');
+    const eagleScoreEl = document.getElementById('eagleScore');
+    const eagleStatusEl = document.getElementById('eagleGameStatus');
+    let eagleGameActive = false;
+    let eagleGameScore = 0;
+    let eagleSecondsLeft = 0;
+    let eagleGameTimer = null;
+
+    function moveEagleTarget() {
+      eagleTarget.style.left = `${12 + Math.random() * 76}%`;
+      eagleTarget.style.top = `${22 + Math.random() * 56}%`;
+    }
+
+    function finishEagleGame() {
+      eagleGameActive = false;
+      eagleTarget.hidden = true;
+      eagleStartBtn.disabled = false;
+      eagleStartBtn.textContent = 'Run Again';
+      eagleStatusEl.textContent = `Sortie complete. Final score: ${eagleGameScore}.`;
+      clearInterval(eagleGameTimer);
+    }
+
+    if (eagleStartBtn && eagleTarget && eagleArena) {
+      eagleStartBtn.addEventListener('click', () => {
+        if (eagleGameActive) return;
+        eagleGameActive = true;
+        eagleGameScore = 0;
+        eagleSecondsLeft = 10;
+        eagleScoreEl.textContent = 'Score: 0';
+        eagleStatusEl.textContent = 'Sortie active. Tag the eagle before time expires.';
+        eagleStartBtn.disabled = true;
+        eagleTarget.hidden = false;
+        moveEagleTarget();
+        clearInterval(eagleGameTimer);
+        eagleGameTimer = setInterval(() => {
+          eagleSecondsLeft--;
+          eagleStatusEl.textContent = `Sortie active. ${eagleSecondsLeft}s remaining.`;
+          if (eagleSecondsLeft <= 0) finishEagleGame();
+        }, 1000);
+      });
+
+      eagleTarget.addEventListener('click', () => {
+        if (!eagleGameActive) return;
+        eagleGameScore++;
+        eagleScoreEl.textContent = `Score: ${eagleGameScore}`;
+        moveEagleTarget();
+      });
+    }
+
+    const codeStartBtn = document.getElementById('codeStartBtn');
+    const codeStatusEl = document.getElementById('codeGameStatus');
+    const codeScoreEl = document.getElementById('codeScore');
+    const codeLights = Array.from(document.querySelectorAll('.code-light'));
+    const codeKeys = Array.from(document.querySelectorAll('.code-key'));
+    const codeColors = ['red', 'white', 'blue'];
+    let codeSequence = [];
+    let codeInput = [];
+    let codeGameActive = false;
+    let codeSolved = 0;
+
+    function setCodeKeysDisabled(disabled) {
+      codeKeys.forEach((key) => {
+        key.disabled = disabled;
+      });
+    }
+
+    function showCodeSequence() {
+      codeLights.forEach((light, index) => {
+        light.className = `code-light ${codeSequence[index]}`;
+      });
+
+      setTimeout(() => {
+        codeLights.forEach((light) => {
+          light.className = 'code-light';
+        });
+        setCodeKeysDisabled(false);
+        codeStatusEl.textContent = 'Signal hidden. Enter the sequence.';
+      }, 900);
+    }
+
+    function startCodeRound() {
+      codeSequence = Array.from({ length: 3 }, () => codeColors[Math.floor(Math.random() * codeColors.length)]);
+      codeInput = [];
+      codeGameActive = true;
+      codeStartBtn.textContent = 'New Code';
+      codeStartBtn.disabled = true;
+      codeStatusEl.textContent = 'Memorize the signal...';
+      setCodeKeysDisabled(true);
+      showCodeSequence();
+    }
+
+    if (codeStartBtn && codeKeys.length === 3) {
+      setCodeKeysDisabled(true);
+      codeStartBtn.addEventListener('click', startCodeRound);
+
+      codeKeys.forEach((key) => {
+        key.addEventListener('click', () => {
+          if (!codeGameActive) return;
+          codeInput.push(key.dataset.code);
+          const currentIndex = codeInput.length - 1;
+
+          if (codeInput[currentIndex] !== codeSequence[currentIndex]) {
+            codeGameActive = false;
+            setCodeKeysDisabled(true);
+            codeStartBtn.disabled = false;
+            codeStartBtn.textContent = 'Try Again';
+            codeStatusEl.textContent = 'You failed, maggot! Glory to Iran!';
+            return;
+          }
+
+          codeLights[currentIndex].className = `code-light ${key.dataset.code} complete`;
+          if (codeInput.length === codeSequence.length) {
+            codeGameActive = false;
+            codeSolved++;
+            codeScoreEl.textContent = `Solved: ${codeSolved}`;
+            codeStartBtn.disabled = false;
+            codeStartBtn.textContent = 'New Code';
+            codeStatusEl.textContent = 'Access granted. New code ready when you are.';
+          }
+        });
       });
     }
 
