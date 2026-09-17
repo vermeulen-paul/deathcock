@@ -1406,6 +1406,7 @@
       enabled: localStorage.getItem('patriotFireworkMuted') !== 'true',
       audioCtx: null,
       completionSoundPlayed: false,
+      lastClockSecond: null,
       fireworkReady: true,
       lastFireworkBurstAt: 0,
       fireworkBurstCooldownMs: 4300,
@@ -1441,6 +1442,31 @@
 
     function ensureAudioContext() {
       return activateAudio();
+    }
+
+    function playClockTick(second) {
+      if (!soundState.enabled || !soundState.fireworkReady) return;
+      const ctx = ensureAudioContext();
+      if (!ctx || ctx.state !== 'running') return;
+
+      const startTime = ctx.currentTime;
+      const tickOsc = ctx.createOscillator();
+      const tickGain = ctx.createGain();
+      const tickFilter = ctx.createBiquadFilter();
+
+      tickOsc.type = 'square';
+      tickOsc.frequency.setValueAtTime(second % 2 === 0 ? 920 : 760, startTime);
+      tickFilter.type = 'lowpass';
+      tickFilter.frequency.setValueAtTime(1800, startTime);
+      tickGain.gain.setValueAtTime(0.0001, startTime);
+      tickGain.gain.exponentialRampToValueAtTime(0.055, startTime + 0.004);
+      tickGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.075);
+
+      tickOsc.connect(tickFilter);
+      tickFilter.connect(tickGain);
+      tickGain.connect(ctx.destination);
+      tickOsc.start(startTime);
+      tickOsc.stop(startTime + 0.08);
     }
 
     function startNationalAnthem() {
@@ -1691,6 +1717,14 @@
 
     function updateClock() {
       const now = new Date();
+      const currentSecond = Math.floor(now.getTime() / 1000);
+      if (soundState.lastClockSecond === null) {
+        soundState.lastClockSecond = currentSecond;
+      } else if (currentSecond !== soundState.lastClockSecond) {
+        soundState.lastClockSecond = currentSecond;
+        playClockTick(currentSecond);
+      }
+
       const target = getUpcomingTarget(now);
       const totalRemMs = Math.max(0, target - now);
       const reachedTarget = totalRemMs === 0;
