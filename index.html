@@ -1718,12 +1718,6 @@
     function updateClock() {
       const now = new Date();
       const currentSecond = Math.floor(now.getTime() / 1000);
-      if (soundState.lastClockSecond === null) {
-        soundState.lastClockSecond = currentSecond;
-      } else if (currentSecond !== soundState.lastClockSecond) {
-        soundState.lastClockSecond = currentSecond;
-        playClockTick(currentSecond);
-      }
 
       const target = getUpcomingTarget(now);
       const totalRemMs = Math.max(0, target - now);
@@ -1751,6 +1745,15 @@
 
       // Business remaining duration
       const remBiz = calculateBusinessDuration(now, target);
+      if (soundState.lastClockSecond === null) {
+        soundState.lastClockSecond = currentSecond;
+      } else if (currentSecond !== soundState.lastClockSecond) {
+        soundState.lastClockSecond = currentSecond;
+        if (remBiz.isStartInWorkHours) {
+          playClockTick(currentSecond);
+        }
+      }
+
       const remBizHours = remBiz.businessSeconds / 3600;
       const remWorkdays = remBizHours / HOURS_PER_WORK_DAY;
       const remWorkWeeks = remBizHours / 40.0;
