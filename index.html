@@ -1151,6 +1151,27 @@
       gap: 8px;
     }
 
+    .team-canada-chair {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--card-border);
+      border-radius: 999px;
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .team-canada-chair-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
     @media (max-width: 768px) {
       .header-details {
         grid-template-columns: 1fr;
@@ -1391,6 +1412,10 @@
       <span>🦅 Land of the Free, Home of the Brave • Target: November 30 @ 17:00 • Precision live countdown <img class="us-flag" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="United States flag"></span>
     </div>
   </div>
+  <aside class="team-canada-chair" aria-label="Team Canada chair">
+    <span class="team-canada-chair-icon" aria-hidden="true">🪑</span>
+    <span>Team Canada chair</span>
+  </aside>
 
   <script>
     const WORK_DAY_START_HOUR = 9;  // 09:00
