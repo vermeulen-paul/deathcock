@@ -36,6 +36,8 @@ Open [index.html](index.html) in any web browser, or launch with a local server:
 start index.html
 ```
 
+The GitHub Pages workflow deploys `index.html` and the `resources/` directory together so the web app's audio is available.
+
 ### Single Snapshot Frame
 ```bash
 dotnet run -- --once
